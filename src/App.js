@@ -12,7 +12,8 @@ class App {
     createListeners() {
         this.breakWordButton.addEventListener('click', (e) => {
             e.preventDefault();
-            this.wordList = this.breakText(this.prepareText(this.text.value.trim()));
+            this.wordList = this.breakText(this.text.value.spaces().hyphenSpaces().trim());
+            // this.wordList = this.breakText(this.prepareText(this.text.value.trim()));
             this.printWords(this.wordList, this.output);
             this.clearTextButton.attributeStyleMap.set('display', 'inline');
         });

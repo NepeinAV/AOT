@@ -47,7 +47,7 @@ class WordsClass extends App {
             //     else newtext += text[i]
             else newtext += text[i];
         }
-        console.log(newtext);
+        console.dir(newtext);
         return newtext;
     }
 
