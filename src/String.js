@@ -1,21 +1,44 @@
 // уничтожает двойные, тройные, ... пробелы
-String.prototype.spaces = function () {
-    let newtext = '';
+String.prototype.multipleSpaces = function () {
+    let newText = '';
     for (let i = 0; i < this.length; i++)
-        if (this.charCodeAt(i) === 32) {
-            if (this.charCodeAt(i + 1) !== 32) newtext += this[i]
-        } else
-            newtext += this[i];
-    return newtext;
+        if (this.charCodeAt(i) === 32 && this.charCodeAt(i + 1) === 32)
+            continue;
+        else
+            newText += this[i];
+    return newText;
 }
 
 // уничтожает пробелы перед и после дефиса
 String.prototype.hyphenSpaces = function () {
-    let newtext = '';
+    let newText = '';
     for (let i = 0; i < this.length; i++)
         if (this.charCodeAt(i) === 32) {
-            if (this.charCodeAt(i + 1) !== 45 && this.charCodeAt(i - 1) !== 45) newtext += this[i]
+            if (this.charCodeAt(i + 1) !== 45 && this.charCodeAt(i - 1) !== 45) newText += this[i]
         } else
-            newtext += this[i];
-    return newtext;
+            newText += this[i];
+    return newText;
 }
+
+String.prototype.lineWrapping = function () {
+    let newText = '';
+    for (let i = 0; i < this.length; i++)
+        if (this.charCodeAt(i) === 10 || this.charCodeAt(i) === 13)
+            newText += ' ';
+        else
+            newText += this[i];
+    return newText;
+}
+
+// TODO: f(): уничтожает дефис, если он использован в качестве переноса строки
+// String.prototype.hyphenEndString = function () {
+//     let newtext = '';
+//     for (let i = 0; i < this.length; i++) {
+//         if (this.charCodeAt(i) === 45 && this.charCodeAt(i + 1) === 10) {
+//             i++;
+//         } else {
+//             newtext += this[i];
+//         }
+//     }
+//     return newtext;
+// }
