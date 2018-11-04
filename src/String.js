@@ -1,8 +1,13 @@
+String.prototype.in = function (symbols = [], position) {
+    if (typeof symbols !== 'object') throw new Error('Argument is not an array');
+    return symbols.find(val => val === this.charCodeAt(position));
+}
+
 // уничтожает двойные, тройные, ... пробелы
 String.prototype.multipleSpaces = function () {
     let newText = '';
     for (let i = 0; i < this.length; i++)
-        if (this.charCodeAt(i) === 32 && this.charCodeAt(i + 1) === 32)
+        if (this.in([32, 160, 65279], i) && this.in([32, 160, 65279], i + 1))
             continue;
         else
             newText += this[i];
@@ -13,7 +18,7 @@ String.prototype.multipleSpaces = function () {
 String.prototype.hyphenSpaces = function () {
     let newText = '';
     for (let i = 0; i < this.length; i++)
-        if (this.charCodeAt(i) === 32) {
+        if (this.in([32, 160, 65279], i)) {
             if (this.charCodeAt(i + 1) !== 45 && this.charCodeAt(i - 1) !== 45) newText += this[i]
         } else
             newText += this[i];
@@ -23,7 +28,7 @@ String.prototype.hyphenSpaces = function () {
 String.prototype.lineWrapping = function () {
     let newText = '';
     for (let i = 0; i < this.length; i++)
-        if (this.charCodeAt(i) === 10 || this.charCodeAt(i) === 13)
+        if (this.in([10, 13], i))
             newText += ' ';
         else
             newText += this[i];

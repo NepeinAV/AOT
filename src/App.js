@@ -11,46 +11,66 @@ class App {
 
     createListeners() {
         this.breakWordButton.addEventListener('click', e => {
+            this.loader(true);
+
             console.log('------------------- Breaking text');
             e.preventDefault();
 
-            this.renderSteps([this.breakWordButton, this.clearTextButton, this.sortButton], [true], [true]);
+            this.renderSteps([this.breakWordButton, this.clearTextButton, this.sortButton], [true]);
 
             console.time('Time of text breaking');
-            this.wordList = this.breakText(this.text.value.multipleSpaces().hyphenSpaces().lineWrapping().multipleSpaces().trim());
+            this.wordList = this.breakText(this.text.value
+                .multipleSpaces()
+                .hyphenSpaces()
+                .lineWrapping()
+                .multipleSpaces()
+                .trim()
+            );
             console.timeEnd('Time of text breaking');
 
             this.printWords(this.wordList, this.output);
-            console.log(this.wordList);
             e.target.classList.add('active');
 
-            this.renderSteps([this.clearTextButton], [true]);
+            this.renderSteps([this.breakWordButton, this.clearTextButton], [true, true], [true]);
+            this.loader(false);
+
         });
 
         this.clearTextButton.addEventListener('click', e => {
+            this.loader(true);
+
             console.log('------------------- Cleaning words');
             e.preventDefault();
 
-            this.renderSteps([this.sortButton], [true]);
 
             console.time('Time of word cleaning');
             this.cleanWordList = this.clearWords(this.wordList);
             console.timeEnd('Time of word cleaning');
 
             this.printWords(this.cleanWordList, this.output);
+            this.renderSteps([this.clearTextButton, this.sortButton], [true, true], [true]);
+
             e.target.classList.add('active');
+            this.loader(false);
+
         });
 
         this.sortButton.addEventListener('click', e => {
+            this.loader(true);
+
             console.log('------------------- Sorting words');
             e.preventDefault();
 
+            let words = this.cleanWordList.slice();
+
             console.time('Time of word sorting');
-            this.sortedList = this.sortWords(this.cleanWordList);
+            this.quickSort(words, 0, words.length - 1)
             console.timeEnd('Time of word sorting');
 
+            this.sortedList = words;
             this.printWords(this.sortedList, this.output);
             e.target.classList.add('active');
+            this.loader(false);
         });
 
         this.output.addEventListener('scroll', e => {
@@ -76,6 +96,10 @@ class App {
             if (active[i]) val.classList.add('active');
             else val.classList.remove('active');
         });
+    }
+
+    loader(state) {
+        document.querySelector('.lds-ellipsis').attributeStyleMap.set('opacity', (state) ? '1' : '0');
     }
 }
 
