@@ -3,11 +3,11 @@ import App from './App';
 const badSymbols = [
   [33, 47],
   [58, 63],
-  [95, 95],
+  [91, 95],
   [123, 126],
   [171, 171],
   [187, 187],
-  [8211, 8211],
+  [8211, 8212],
   [8722, 8722]
 ];
 
@@ -33,7 +33,7 @@ class WordsClass extends App {
     let words = [];
     let word = '';
     for (let i = 0; i < text.length; i++) {
-      if (text.in([32, 160, 65279], i)) {
+      if (text.in([32, 65279], i)) {
         if (word.trim() !== '') {
           words.push(word);
           word = '';

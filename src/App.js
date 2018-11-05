@@ -16,20 +16,18 @@ class App {
             console.log('------------------- Breaking text');
             e.preventDefault();
 
-            this.renderSteps([this.breakWordButton, this.clearTextButton, this.sortButton], [true]);
+            this.renderSteps([this.breakWordButton, this.clearTextButton, this.sortButton, this.stammingButton], [true]);
 
             console.time('Time of text breaking');
             this.wordList = this.breakText(this.text.value
                 .multipleSpaces()
                 .hyphenSpaces()
                 .lineWrapping()
-                .multipleSpaces()
-                .trim()
+                //.trim()
             );
             console.timeEnd('Time of text breaking');
 
             this.printWords(this.wordList, this.output);
-            e.target.classList.add('active');
 
             this.renderSteps([this.breakWordButton, this.clearTextButton], [true, true], [true]);
             this.loader(false);
@@ -48,9 +46,8 @@ class App {
             console.timeEnd('Time of word cleaning');
 
             this.printWords(this.cleanWordList, this.output);
-            this.renderSteps([this.clearTextButton, this.sortButton], [true, true], [true]);
+            this.renderSteps([this.clearTextButton, this.sortButton, this.stammingButton], [true, true], [true]);
 
-            e.target.classList.add('active');
             this.loader(false);
 
         });
@@ -69,8 +66,13 @@ class App {
 
             this.sortedList = words;
             this.printWords(this.sortedList, this.output);
-            e.target.classList.add('active');
+            this.renderSteps([this.sortButton, this.stammingButton], [true, true], [true]);
+
             this.loader(false);
+        });
+
+        this.stammingButton.addEventListener('click', e => {
+            this.renderSteps([this.stammingButton], [true], [true]);
         });
 
         this.output.addEventListener('scroll', e => {
@@ -79,12 +81,16 @@ class App {
     }
 
     createLineNumbers(lines) {
-        this.lineNumberBox.innerHTML = '';
-        let line;
-        for (let key in lines) {
-            line = document.createElement('div');
-            line.innerText = ++key;
-            this.lineNumberBox.appendChild(line);
+        if (this.lineNumberBox.lastElementChild.innerText < lines.length) {
+            let line;
+            for (let i = +this.lineNumberBox.lastElementChild.innerText + 1; i <= lines.length; i++) {
+                line = document.createElement('div');
+                line.innerText = i;
+                this.lineNumberBox.appendChild(line);
+            }
+        } else {
+            for (let i = +this.lineNumberBox.lastElementChild.innerText - 1; i >= lines.length; i--)
+                this.lineNumberBox.removeChild(this.lineNumberBox.children[i]);
         }
         this.output.attributeStyleMap.set('margin-left', CSS.px(this.lineNumberBox.offsetWidth));
     }

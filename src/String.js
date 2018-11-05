@@ -1,4 +1,4 @@
-String.prototype.in = function (symbols = [], position) {
+String.prototype.in = function (symbols = [], position = 0) {
     if (typeof symbols !== 'object') throw new Error('Argument is not an array');
     return symbols.find(val => val === this.charCodeAt(position));
 }
@@ -14,7 +14,7 @@ String.prototype.multipleSpaces = function () {
     return newText;
 }
 
-// уничтожает пробелы перед и после дефиса
+// уничтожает пробелы до и после дефиса
 String.prototype.hyphenSpaces = function () {
     let newText = '';
     for (let i = 0; i < this.length; i++)
