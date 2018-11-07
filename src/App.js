@@ -33,14 +33,16 @@ class App {
         this.breakWordButton.addEventListener('click', e => {
             let {
                 isInputChanged,
-                wordList
+                wordList,
+                cleanWordList,
+                sortedList
             } = this.state;
 
             e.preventDefault();
 
             if (!isInputChanged) {
                 this.printWords(wordList, this.output);
-                this.renderSteps([this.breakWordButton, this.clearTextButton], [true, true], [true]);
+                this.renderSteps([this.breakWordButton, this.clearTextButton, this.sortButton, this.stammingButton], [true, true], [true]);
                 return false;
             }
 
@@ -58,7 +60,9 @@ class App {
 
             this.dispatch(this.state, {
                 wordList: wordList,
-                isInputChanged: false
+                isInputChanged: false,
+                cleanWordList: [],
+                sortedList: []
             });
 
             this.printWords(wordList, this.output);
@@ -67,11 +71,18 @@ class App {
 
         this.clearTextButton.addEventListener('click', e => {
             let {
+                isInputChanged,
                 wordList,
                 cleanWordList
             } = this.state;
 
             e.preventDefault();
+
+            if (cleanWordList.length) {
+                this.printWords(cleanWordList, this.output);
+                this.renderSteps([this.clearTextButton, this.sortButton, this.stammingButton], [true, true], [true]);
+                return false;
+            }
 
             if (!wordList.length) return false;
 
@@ -95,8 +106,15 @@ class App {
                 sortedList
             } = this.state;
 
-            console.log('------------------- Sorting words');
             e.preventDefault();
+
+            if (sortedList.length) {
+                this.printWords(sortedList, this.output);
+                this.renderSteps([this.sortButton, this.stammingButton], [true, true], [true]);
+                return false;
+            }
+
+            console.log('------------------- Sorting words');
 
             let words = cleanWordList.slice();
 
@@ -115,6 +133,7 @@ class App {
         });
 
         this.stammingButton.addEventListener('click', e => {
+            e.preventDefault();
             this.renderSteps([this.stammingButton], [true], [true]);
         });
 
