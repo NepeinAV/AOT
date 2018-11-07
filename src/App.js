@@ -1,12 +1,14 @@
+import {
+    descComp,
+    revComp,
+    revDescComp
+} from './Sort';
+
 class App {
-    printWords(words, output, before = []) {
+    printWords(words, output) {
         output.value = '';
-        if (before.length === 0) {
-            words.map(val => output.value += val.trim() + '\n');
-            this.createLineNumbers(words);
-        } else {
-            console.log('ok')
-        }
+        words.map((val, i) => (i === words.length - 1) ? output.value += val.trim() : output.value += val.trim() + '\n');
+        this.createLineNumbers(words);
     }
 
     createListeners() {
@@ -61,10 +63,11 @@ class App {
             let words = this.cleanWordList.slice();
 
             console.time('Time of word sorting');
-            this.quickSort(words, 0, words.length - 1)
+            words.qsort();
             console.timeEnd('Time of word sorting');
 
             this.sortedList = words;
+
             this.printWords(this.sortedList, this.output);
             this.renderSteps([this.sortButton, this.stammingButton], [true, true], [true]);
 
