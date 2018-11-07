@@ -4,8 +4,8 @@ Array.prototype.swap = function (a, b) {
     this[a] = temp;
 }
 
-Array.prototype.isort = function (compareFn, left, right) {
-    for (let i = left; i <= right; i++)
+Array.prototype.isort = function (compareFn, left = 0, right = this.length - 1) {
+    for (let i = left + 1; i <= right; i++)
         for (let j = i; j > 0 && compareFn(this[j], this[j - 1]); j--)
             this.swap(j - 1, j);
 
@@ -22,7 +22,7 @@ Array.prototype.qsort = function (compareFn, left = 0, right = this.length - 1) 
 
     if (typeof compareFn !== 'function') throw Error('Argument compareFn must be a function');
 
-    if (right - left <= 40) return this.isort(compareFn, left, right);
+    if (right - left <= 32) return this.isort(compareFn, left, right);
 
     let i = left;
     let j = right;

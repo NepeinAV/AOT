@@ -67,12 +67,13 @@ class WordsClass extends App {
         findBadSymbol = this.hyphen(word, i);
       else
         findBadSymbol = this.badSymbol(word.charCodeAt(i))
-      newWord += (!findBadSymbol) ? word[i] : ' ';
+      newWord += (findBadSymbol) ? ' ' : word[i];
     }
-    return (newWord.trim() === '') ? [] : this.breakText(newWord.trim());
+    newWord = newWord.trim();
+    return (newWord === '') ? [] : this.breakText(newWord);
   }
 
-  hyphen = (word, i) => this.badSymbol(word.charCodeAt(i - 1)) || this.badSymbol(word.charCodeAt(i + 1));
+  hyphen = (word, i) => ((word.charCodeAt(i - 1)) ? this.badSymbol(word.charCodeAt(i - 1)) : true) || ((word.charCodeAt(i + 1)) ? this.badSymbol(word.charCodeAt(i + 1)) : true);
 
   badSymbol = symbol => badSymbols.find(val => (symbol >= val[0] && symbol <= val[1]) ? true : false);
 }

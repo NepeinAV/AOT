@@ -7,7 +7,9 @@ import {
 class App {
     printWords(words, output) {
         output.value = '';
-        words.map((val, i) => (i === words.length - 1) ? output.value += val.trim() : output.value += val.trim() + '\n');
+        let text = '';
+        words.map((val, i) => (i === words.length - 1) ? text += val : text += val + '\n');
+        output.value = text;
         this.createLineNumbers(words);
     }
 
@@ -21,22 +23,23 @@ class App {
             this.renderSteps([this.breakWordButton, this.clearTextButton, this.sortButton, this.stammingButton], [true]);
 
             console.time('Time of text breaking');
+
             this.wordList = this.breakText(this.text.value
                 .multipleSpaces()
                 .hyphenSpaces()
                 .lineWrapping()
-                //.trim()
             );
+
             console.timeEnd('Time of text breaking');
 
             this.printWords(this.wordList, this.output);
-
             this.renderSteps([this.breakWordButton, this.clearTextButton], [true, true], [true]);
             this.loader(false);
-
         });
 
         this.clearTextButton.addEventListener('click', e => {
+            if (!this.wordList.length) return false;
+
             this.loader(true);
 
             console.log('------------------- Cleaning words');
@@ -81,21 +84,35 @@ class App {
         this.output.addEventListener('scroll', e => {
             this.lineNumberBox.attributeStyleMap.set('margin-top', CSS.px(-e.target.scrollTop));
         });
+
+        document.querySelector('.outputbox').addEventListener('click', (e) => {
+            if (e.target.className === 'percent') {
+                document.querySelector('.inputbox').attributeStyleMap.set('width', CSS.percent(100 - e.target.dataset.percent));
+                document.querySelector('.outputbox').attributeStyleMap.set('width', CSS.percent(e.target.dataset.percent));
+            }
+        })
     }
 
     createLineNumbers(lines) {
-        if (this.lineNumberBox.lastElementChild.innerText < lines.length) {
+        if (lines.length === 0) {
+            this.lineNumberBox.innerHTML = '';
+            let line;
+            line = document.createElement('span');
+            line.innerText = 1;
+            this.lineNumberBox.appendChild(line);
+        } else if (this.lineNumberBox.lastElementChild.innerText < lines.length) {
             let line;
             for (let i = +this.lineNumberBox.lastElementChild.innerText + 1; i <= lines.length; i++) {
-                line = document.createElement('div');
+                line = document.createElement('span');
                 line.innerText = i;
                 this.lineNumberBox.appendChild(line);
             }
-        } else {
+        } else if (this.lineNumberBox.lastElementChild.innerText > lines.length) {
             for (let i = +this.lineNumberBox.lastElementChild.innerText - 1; i >= lines.length; i--)
                 this.lineNumberBox.removeChild(this.lineNumberBox.children[i]);
         }
-        this.output.attributeStyleMap.set('margin-left', CSS.px(this.lineNumberBox.offsetWidth));
+
+        this.output.attributeStyleMap.set('padding-left', CSS.px(this.lineNumberBox.offsetWidth + 15));
     }
 
     renderSteps(steps, visible = [], active = []) {

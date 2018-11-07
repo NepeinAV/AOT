@@ -3,7 +3,7 @@
     position: absolute;
     width: 64px;
     height: 64px;
-    left: calc(50% - 32px);
+    left: 60px;
     top: calc(50% - 32px);
     z-index: 4;
     pointer-events: none;
@@ -13,8 +13,8 @@
 .lds-ellipsis div {
     position: absolute;
     top: 27px;
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: #999;
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
