@@ -18,15 +18,14 @@ class WordsClass extends App {
   constructor() {
     super();
     this.text = document.querySelector('textarea');
+    this.input = document.querySelectorAll('textarea')[0];
     this.output = document.querySelectorAll('textarea')[1];
     this.lineNumberBox = document.querySelector('.lines');
-    this.wordList = [];
-    this.cleanWordList = [];
-    this.sortedList = [];
     this.breakWordButton = document.querySelector('a[data-type=breaktext]');
     this.clearTextButton = document.querySelector('a[data-type=cleartext]');
     this.sortButton = document.querySelector('a[data-type=sort]');
     this.stammingButton = document.querySelector('a[data-type=stamming]');
+    console.dir(this.state);
     this.createListeners();
   }
 

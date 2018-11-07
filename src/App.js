@@ -5,6 +5,15 @@ import {
 } from './Sort';
 
 class App {
+    constructor() {
+        this.state = {
+            isInputChanged: true,
+            wordList: [],
+            cleanWordList: [],
+            sortedList: []
+        }
+    }
+
     printWords(words, output) {
         output.value = '';
         let text = '';
@@ -13,68 +22,96 @@ class App {
         this.createLineNumbers(words);
     }
 
+    dispatch(state, payload) {
+        this.state = {
+            ...state,
+            ...payload
+        }
+    }
+
     createListeners() {
         this.breakWordButton.addEventListener('click', e => {
-            this.loader(true);
+            let {
+                isInputChanged,
+                wordList
+            } = this.state;
+
+            e.preventDefault();
+
+            if (!isInputChanged) {
+                this.printWords(wordList, this.output);
+                this.renderSteps([this.breakWordButton, this.clearTextButton], [true, true], [true]);
+                return false;
+            }
 
             console.log('------------------- Breaking text');
-            e.preventDefault();
 
             this.renderSteps([this.breakWordButton, this.clearTextButton, this.sortButton, this.stammingButton], [true]);
 
             console.time('Time of text breaking');
-
-            this.wordList = this.breakText(this.text.value
+            wordList = this.breakText(this.text.value
                 .multipleSpaces()
                 .hyphenSpaces()
                 .lineWrapping()
             );
-
             console.timeEnd('Time of text breaking');
 
-            this.printWords(this.wordList, this.output);
+            this.dispatch(this.state, {
+                wordList: wordList,
+                isInputChanged: false
+            });
+
+            this.printWords(wordList, this.output);
             this.renderSteps([this.breakWordButton, this.clearTextButton], [true, true], [true]);
-            this.loader(false);
         });
 
         this.clearTextButton.addEventListener('click', e => {
-            if (!this.wordList.length) return false;
+            let {
+                wordList,
+                cleanWordList
+            } = this.state;
 
-            this.loader(true);
-
-            console.log('------------------- Cleaning words');
             e.preventDefault();
 
+            if (!wordList.length) return false;
+
+            console.log('------------------- Cleaning words');
 
             console.time('Time of word cleaning');
-            this.cleanWordList = this.clearWords(this.wordList);
+            cleanWordList = this.clearWords(wordList);
             console.timeEnd('Time of word cleaning');
 
-            this.printWords(this.cleanWordList, this.output);
+            this.dispatch(this.state, {
+                cleanWordList: cleanWordList
+            });
+
+            this.printWords(cleanWordList, this.output);
             this.renderSteps([this.clearTextButton, this.sortButton, this.stammingButton], [true, true], [true]);
-
-            this.loader(false);
-
         });
 
         this.sortButton.addEventListener('click', e => {
-            this.loader(true);
+            let {
+                cleanWordList,
+                sortedList
+            } = this.state;
 
             console.log('------------------- Sorting words');
             e.preventDefault();
 
-            let words = this.cleanWordList.slice();
+            let words = cleanWordList.slice();
 
             console.time('Time of word sorting');
             words.qsort();
             console.timeEnd('Time of word sorting');
 
-            this.sortedList = words;
+            sortedList = words;
 
-            this.printWords(this.sortedList, this.output);
+            this.dispatch(this.state, {
+                sortedList: sortedList
+            });
+
+            this.printWords(sortedList, this.output);
             this.renderSteps([this.sortButton, this.stammingButton], [true, true], [true]);
-
-            this.loader(false);
         });
 
         this.stammingButton.addEventListener('click', e => {
@@ -90,7 +127,11 @@ class App {
                 document.querySelector('.inputbox').attributeStyleMap.set('width', CSS.percent(100 - e.target.dataset.percent));
                 document.querySelector('.outputbox').attributeStyleMap.set('width', CSS.percent(e.target.dataset.percent));
             }
-        })
+        });
+
+        this.input.addEventListener('change', (e) => {
+            this.state.isInputChanged = true;
+        });
     }
 
     createLineNumbers(lines) {
