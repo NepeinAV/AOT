@@ -12,8 +12,6 @@ const badSymbols = [
     [8722, 8722]
 ];
 
-const boundary = 40;
-
 class WordsClass extends App {
     constructor() {
         super();

@@ -36,5 +36,6 @@ module.exports = {
         new ExtractCssPlugin({
             filename: "style.css"
         })
-    ]
+    ],
+    target: 'web'
 }

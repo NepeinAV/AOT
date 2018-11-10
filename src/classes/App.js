@@ -2,7 +2,9 @@ import {
     descComp,
     revComp,
     revDescComp
-} from './Sort';
+} from '../Sort';
+
+// let worker = new Worker('./worker.js');
 
 class App {
     constructor() {
@@ -30,6 +32,19 @@ class App {
     }
 
     createListeners() {
+        // worker.addEventListener('message', (e) => {
+        //     this.printWords(e.data, this.output);
+
+        //     this.dispatch(this.state, {
+        //         wordList: e.data,
+        //         isInputChanged: false,
+        //         cleanWordList: [],
+        //         sortedList: []
+        //     });
+
+        //     this.loader(false);
+        // })
+
         this.breakWordButton.addEventListener('click', e => {
             let {
                 isInputChanged,
@@ -41,12 +56,8 @@ class App {
             e.preventDefault();
 
             if (!isInputChanged) {
-                this.printWords(wordList, this.output); <<
-                << << < HEAD
-                this.renderSteps([this.breakWordButton, this.cleanTextButton, this.sortButton, this.stammingButton], [true, true], [true]); ===
-                === =
-                this.renderSteps([this.breakWordButton, this.clearTextButton, this.sortButton, this.stammingButton], [true, true], [true]); >>>
-                >>> > b826f20268aaad0c43871d3c2c88322f5c1a6641
+                this.printWords(wordList, this.output);
+                this.renderSteps([this.breakWordButton, this.cleanTextButton, this.sortButton, this.stammingButton], [true, true], [true]);
                 return false;
             }
 
@@ -60,6 +71,12 @@ class App {
                 .hyphenSpaces()
                 .lineWrapping()
             );
+
+            // wordList = worker.postMessage({
+            //     type: 'break',
+            //     text: this.text.value
+            // });
+
             console.timeEnd('Time of text breaking');
 
             this.dispatch(this.state, {
@@ -83,12 +100,8 @@ class App {
             e.preventDefault();
 
             if (cleanWordList.length) {
-                this.printWords(cleanWordList, this.output); <<
-                << << < HEAD
-                this.renderSteps([this.cleanTextButton, this.sortButton, this.stammingButton], [true, true], [true]); ===
-                === =
-                this.renderSteps([this.clearTextButton, this.sortButton, this.stammingButton], [true, true], [true]); >>>
-                >>> > b826f20268aaad0c43871d3c2c88322f5c1a6641
+                this.printWords(cleanWordList, this.output);
+                this.renderSteps([this.cleanTextButton, this.sortButton, this.stammingButton], [true, true], [true]);
                 return false;
             }
 
@@ -142,6 +155,9 @@ class App {
 
         this.stammingButton.addEventListener('click', e => {
             e.preventDefault();
+
+
+
             this.renderSteps([this.stammingButton], [true], [true]);
         });
 
