@@ -1,3 +1,8 @@
+String.prototype.inString = function (endings = []) {
+    if (typeof endings !== 'object') throw new Error('Argument is not an array');
+    return endings.find(val => val === this.toString());
+}
+
 String.prototype.in = function (symbols = [], position = 0) {
     if (typeof symbols !== 'object') throw new Error('Argument is not an array');
     return symbols.find(val => val === this.charCodeAt(position));

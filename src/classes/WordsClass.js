@@ -1,30 +1,18 @@
 import App from './App';
 
-const badSymbols = [
-    [33, 47],
-    [58, 63],
-    [91, 95],
-    [123, 126],
-    [171, 171],
-    [187, 187],
-    [8211, 8212],
-    [8230, 8230],
-    [8722, 8722]
-];
-
-class WordsClass extends App {
+class WordsClass {
     constructor() {
-        super();
-        this.text = document.querySelector('textarea');
-        this.input = document.querySelectorAll('textarea')[0];
-        this.output = document.querySelectorAll('textarea')[1];
-        this.lineNumberBox = document.querySelector('.lines');
-        this.breakWordButton = document.querySelector('a[data-type=breaktext]');
-        this.cleanTextButton = document.querySelector('a[data-type=cleantext]');
-        this.sortButton = document.querySelector('a[data-type=sort]');
-        this.stammingButton = document.querySelector('a[data-type=stamming]');
-        console.log('state', this.state);
-        this.createListeners();
+        this.badSymbols = [
+            [33, 47],
+            [58, 63],
+            [91, 95],
+            [123, 126],
+            [171, 171],
+            [187, 187],
+            [8211, 8212],
+            [8230, 8230],
+            [8722, 8722]
+        ];
     }
 
     breakText(text) {
@@ -49,14 +37,14 @@ class WordsClass extends App {
         let wordList = [];
         let word;
         for (let val of words) {
-            word = this.cleanWord(val.trim().toLowerCase(), badSymbols);
+            word = this.cleanWord(val.trim().toLowerCase());
             if (word.length)
                 wordList = wordList.concat(word);
         }
         return wordList;
     }
 
-    cleanWord(word, badSymbols) {
+    cleanWord(word) {
         let newWord = '';
         let findBadSymbol;
         for (let i = 0; i < word.length; i++) {
@@ -72,7 +60,7 @@ class WordsClass extends App {
 
     hyphen = (word, i) => ((word.charCodeAt(i - 1)) ? this.badSymbol(word.charCodeAt(i - 1)) : true) || ((word.charCodeAt(i + 1)) ? this.badSymbol(word.charCodeAt(i + 1)) : true);
 
-    badSymbol = symbol => badSymbols.find(val => (symbol >= val[0] && symbol <= val[1]) ? true : false);
+    badSymbol = symbol => this.badSymbols.find(val => (symbol >= val[0] && symbol <= val[1]) ? true : false);
 }
 
 export default WordsClass;

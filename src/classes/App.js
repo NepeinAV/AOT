@@ -4,16 +4,52 @@ import {
     revDescComp
 } from '../Sort';
 
+import StemmingClass from './Stemming';
+import WordsClass from './WordsClass';
+
+const Stemming = new StemmingClass();
+const Words = new WordsClass();
+
 // let worker = new Worker('./worker.js');
 
-class App {
+class AppClass {
     constructor() {
+
+        // console.log(Stemming.verbF('валять'));
+        let arr = ["в", "вавиловка", "вагнера", "вагон", "вагона", "вагоне", "вагонов", "вагоном", "вагоны", "важная", "важнее", "важнейшие", "важнейшими", "важничал", "важно", "важного", "важное", "важной", "важном", "важному", "важности", "важностию", "важность", "важностью", "важную", "важны", "важные", "важный", "важным", "важных", "вазах", "вазы", "вакса", "вакханка", "вал", "валандался", "валентина", "валериановых", "валерию", "валетами", "вали", "валил", "валился", "валится", "валов", "вальдшнепа", "вальс", "вальса", "вальсе", "вальсишку", "вальтера", "валяется", "валялась", "валялись", "валялось", "валялся", "валять", "валяются", "вам", "вами"];
+        let right = ["в", "вавиловк", "вагнер", "вагон", "вагон", "вагон", "вагон", "вагон", "вагон", "важн", "важн", "важн", "важн", "важнича", "важн", "важн", "важн", "важн", "важн", "важн", "важност", "важност", "важност", "важност", "важн", "важн", "важн", "важн", "важн", "важн", "ваз", "ваз", "вакс", "вакханк", "вал", "валанда", "валентин", "валерианов", "валер", "валет", "вал", "вал", "вал", "вал", "вал", "вальдшнеп", "вальс", "вальс", "вальс", "вальсишк", "вальтер", "валя", "валя", "валя", "валя", "валя", "валя", "валя", "вам", "вам"];
+
+        let arr1 = ["п", "па", "пава", "павел", "павильон", "павильонам", "павла", "павлиний", "павлиньи", "павлиньим", "павлович", "павловна", "павловне", "павловной", "павловну", "павловны", "павловцы", "павлыч", "павлыча", "пагубная", "падает", "падай", "падал", "падала", "падаль", "падать", "падаю", "падают", "падающего", "падающие", "падеж", "падение", "падением", "падении", "падений", "падения", "паденье", "паденья", "падет", "падут", "падучая", "падчерицей", "падчерицы", "падшая", "падшей", "падшему", "падший", "падшим", "падших", "падшую", "паек", "пазухи", "пазуху", "пай", "пакет", "пакетом", "пакеты", "пакостей", "пакостно", "пал"];
+        let right1 = ["п", "па", "пав", "павел", "павильон", "павильон", "павл", "павлин", "павлин", "павлин", "павлович", "павловн", "павловн", "павловн", "павловн", "павловн", "павловц", "павлыч", "павлыч", "пагубн", "пада", "пада", "пада", "пада", "падал", "пада", "пада", "пада", "пада", "пада", "падеж", "паден", "паден", "паден", "паден", "паден", "паден", "паден", "падет", "падут", "падуч", "падчериц", "падчериц", "падш", "падш", "падш", "падш", "падш", "падш", "падш", "паек", "пазух", "пазух", "па", "пакет", "пакет", "пакет", "пакост", "пакостн", "пал"];
+        // let stemmed = Stemming.stemWords(arr);
+
+        // console.table(stemmed);
+
+        // stemmed.map((val, i) => console.log(arr[i], '=>', val, right[i]));
+
+        // console.error('Errors')
+        // stemmed.map((val, i) => {
+        //     if (val !== right[i]) {
+        //         console.log(arr[i], '=>', val, right[i])
+        //     }
+        // });
+
+
         this.state = {
             isInputChanged: true,
             wordList: [],
             cleanWordList: [],
             sortedList: []
-        }
+        };
+        this.text = document.querySelector('textarea');
+        this.input = document.querySelectorAll('textarea')[0];
+        this.output = document.querySelectorAll('textarea')[1];
+        this.lineNumberBox = document.querySelector('.lines');
+        this.breakWordButton = document.querySelector('a[data-type=breaktext]');
+        this.cleanTextButton = document.querySelector('a[data-type=cleantext]');
+        this.sortButton = document.querySelector('a[data-type=sort]');
+        this.stammingButton = document.querySelector('a[data-type=stamming]');
+        this.createListeners();
     }
 
     printWords(words, output) {
@@ -66,7 +102,7 @@ class App {
             this.renderSteps([this.breakWordButton, this.cleanTextButton, this.sortButton, this.stammingButton], [true]);
 
             console.time('Time of text breaking');
-            wordList = this.breakText(this.text.value
+            wordList = Words.breakText(this.text.value
                 .multipleSpaces()
                 .hyphenSpaces()
                 .lineWrapping()
@@ -110,7 +146,7 @@ class App {
             console.log('------------------- Cleaning words');
 
             console.time('Time of word cleaning');
-            cleanWordList = this.cleanWords(wordList);
+            cleanWordList = Words.cleanWords(wordList);
             console.timeEnd('Time of word cleaning');
 
             this.dispatch(this.state, {
@@ -156,8 +192,20 @@ class App {
         this.stammingButton.addEventListener('click', e => {
             e.preventDefault();
 
+            const {
+                sortedList
+            } = this.state;
 
+            console.log('------------------- Stemming words');
 
+            let stemmedList = [];
+            let sorted = sortedList.slice();
+
+            console.time('Time of stemming');
+            stemmedList = Stemming.stemWords(sorted);
+            console.timeEnd('Time of stemming');
+
+            this.printWords(stemmedList, this.output);
             this.renderSteps([this.stammingButton], [true], [true]);
         });
 
@@ -213,4 +261,4 @@ class App {
     }
 }
 
-export default App;
+export default AppClass;
