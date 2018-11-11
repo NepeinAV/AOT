@@ -20,7 +20,7 @@ Array.prototype.qsort = function (compareFn, left = 0, right = this.length - 1) 
         }
     }
 
-    if (typeof compareFn !== 'function') throw Error('Argument compareFn must be a function');
+    if (typeof compareFn !== 'function') throw new Error('Argument compareFn must be a function');
 
     if (right - left <= 32) return this.isort(compareFn, left, right);
 

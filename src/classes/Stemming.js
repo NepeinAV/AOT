@@ -1,45 +1,11 @@
+import * as Endings from '../endings';
+
 class StemmingClass {
     constructor() {
         this.vowels = ['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я'];
         this.vowelCodes = [1072, 1077, 1105, 1080, 1086, 1091, 1099, 1101, 1102, 1103];
         this.consonants = ['б', 'в', 'г', 'д', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ'];
         this.consonantCodes = [1073, 1074, 1075, 1076, 1078, 1079, 1081, 1082, 1083, 1084, 1085, 1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1096, 1097];
-
-        this.perfectiveGerund = [
-            ["вшись", "вши", "в"],
-            ["ывшись", "ившись", "ывши", "ивши", "ив", "ыв"],
-            [6, 5, 4, 3, 2, 1]
-        ];
-        this.adjective = [
-            ['его', 'ого', 'ему', 'ому', 'ими', 'ыми', 'ее', 'ие', 'ые', 'ое', 'ей', 'ий', 'ый', 'ой', 'ем', 'им', 'ым', 'ом', 'их', 'ых', 'ую', 'юю', 'ая', 'яя', 'ою', 'ею'],
-            [3, 2]
-        ];
-        this.participle = [
-            ['ем', 'нн', 'вш', 'ющ', 'щ'],
-            ['ивш', 'ывш', 'ующ'],
-            [3, 2, 1]
-        ];
-        this.reflexive = [
-            ['ся', 'сь'],
-            [2]
-        ];
-        this.verb = [
-            ['ете', 'йте', 'ешь', 'нно', 'ла', 'на', 'ли', 'ем', 'ло', 'но', 'ет', 'ют', 'ны', 'ть', 'н', 'й', 'л'],
-            ['ейте', 'уйте', 'ует', 'уют', 'ило', 'ыло', 'ено', 'ила', 'ыла', 'ена', 'ите', 'или', 'ены', 'ить', 'ыть', 'ишь', 'ыли', 'ей', 'уй', 'ил', 'ыл', 'им', 'ым', 'ен', 'ят', 'ит', 'ыт', 'ую', 'ю'],
-            [4, 3, 2, 1]
-        ];
-        this.noun = [
-            ['иями', 'ями', 'ами', 'ией', 'иях', 'иям', 'ием', 'ев', 'ов', 'ие', 'ье', 'еи', 'ии', 'ей', 'ой', 'ий', 'ям', 'ем', 'ам', 'ом', 'ах', 'ях', 'ию', 'ью', 'ю', 'ия', 'ья', 'ю', 'и', 'о', 'у', 'ы', 'ь', 'й', 'е', 'а', 'я'],
-            [4, 3, 2, 1]
-        ];
-        this.superlative = [
-            ['ейше', 'ейш'],
-            [4, 3]
-        ];
-        this.derivational = [
-            ['ость', 'ост'],
-            [4, 3]
-        ];
     }
 
     getRV(word) {
@@ -119,26 +85,26 @@ class StemmingClass {
         let pg, r, a, v, n;
         let rv = this.getRV(word)[1];;
 
-        pg = this.findEnding(this.perfectiveGerund, word);
+        pg = this.findEnding(Endings.perfectiveGerund, word);
         if (pg !== false) return pg;
 
         if (rv.length <= 2)
             return rv;
 
-        r = this.findEnding(this.reflexive, rv);
+        r = this.findEnding(Endings.reflexive, rv);
         if (r !== false) {
             reflexiveWasFound = true;
             rv = r;
         }
 
-        a = this.findEnding(this.adjective, rv);
+        a = this.findEnding(Endings.adjective, rv);
         if (a != false) return a;
 
-        v = this.findEnding(this.verb, rv);
+        v = this.findEnding(Endings.verb, rv);
         if (v !== false) return rv = v;
 
         if (!reflexiveWasFound) {
-            n = this.findEnding(this.noun, rv);
+            n = this.findEnding(Endings.noun, rv);
             if (n !== false)
                 return rv = n;
         }
@@ -154,7 +120,7 @@ class StemmingClass {
 
     thirdStep(word) {
         if (word.length >= 3) {
-            let d = this.findEnding(this.derivational, word);
+            let d = this.findEnding(Endings.derivational, word);
             return (d != false) ? d : word;
         }
         return word;
@@ -166,7 +132,7 @@ class StemmingClass {
         if (word[word.length - 1] === 'н' && word[word.length - 2] === 'н')
             return word.slice(0, word.length - 1);
 
-        s = this.findEnding(this.superlative, word);
+        s = this.findEnding(Endings.superlative, word);
         if (s !== false) return s;
 
         if (word[word.length - 1] === 'ь')

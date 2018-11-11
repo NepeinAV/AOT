@@ -93,7 +93,7 @@ section {
                 margin-left: 3px;
                 display: block;
             }
-            &:last-of-type {
+            &:nth-of-type(3) {
                 &:before {
                     margin-left: 6px
                 }
@@ -101,6 +101,22 @@ section {
             &:hover {
                 cursor: pointer;
                 text-decoration: underline;
+            }
+        }
+        .sort {
+            width: 27px;
+            height: 25px;
+            margin-left: 10px;
+            float: right;
+            margin-top: -3px;
+            cursor: pointer;
+            &[data-type=asc] {
+                background: url(/img/sort-alphabet-ascending.svg) ~"0/auto 100%" no-repeat;
+            }
+            &[data-type=desc] {
+                background: url(/img/descending-alphabet-sort.svg) ~"0/auto 100%" no-repeat;
+                border-right: 1px solid #ddd;
+                width: 35px;
             }
         }
     }
