@@ -209,7 +209,7 @@ class AppClass {
                 currentList: 'stemmedList'
             });
 
-            // stemmedList = stemmedList.map((val, i) => sorted[i] + ' => ' + val);
+            stemmedList = stemmedList.map((val, i) => sorted[i] + ' => ' + val);
 
             this.printWords(stemmedList, this.output);
             this.renderSteps([this.stammingButton], [true], [true]);

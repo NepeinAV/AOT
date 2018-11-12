@@ -140,15 +140,36 @@ section.outputbox {
         }
     }
     textarea {
-        // padding-left: 51px;
+        float: left; // display: inline-block; // padding-left: 51px;
         margin-left: 0px; // width: ~"calc(100% - 45px)";
-        width: 100%;
+        width: ~"calc(50% + 24px)";
+        &:first-of-type {
+            width: ~"calc(50% + 24px)";
+            border-left: 1px solid #ccc;
+        }
+        &:last-of-type {
+            width: ~"calc(50%)";
+            margin-left: -24px;
+            border-left: 1px solid #ccc;
+        }
+    }
+    .arrow {
+        border-radius: 100%;
+        background: #efefef;
+        height: 48px;
+        width: 48px;
+        line-height: 48px;
+        text-align: center;
+        position: absolute;
+        top: ~"calc(50%)";
+        left: ~"calc(50% - 24px)";
+        border: 1px solid #ccc;
     }
 }
 
 section>textarea {
     width: 100%;
-    height: ~"calc(100% - 35px)";
+    height: ~"calc(100% - 34px)";
     line-height: 25px;
     border: none;
     padding: 10px;
