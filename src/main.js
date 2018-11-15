@@ -3,8 +3,8 @@ import './prototypes/Array';
 
 import AppClass from './classes/App';
 
-import '../build/style.css';
-import '../build/loader.css';
+import './styles/style.css';
+import './styles/loader.css';
 
 const App = new AppClass();
 

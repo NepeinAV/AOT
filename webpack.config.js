@@ -24,6 +24,17 @@ module.exports = {
                     },
                     "css-loader"
                 ]
+            },
+            {
+                test: /\.(png|svg)$/,
+                exclude: /node_modules/,
+                use: [{
+                    loader: "file-loader",
+                    options: {
+                        outputPath: 'img',
+                        publicPath: 'img'
+                    }
+                }]
             }
         ]
     },
