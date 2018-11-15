@@ -40,12 +40,45 @@ class StemmingClass {
 
     stemWords(words) {
         let stemmedWords = [];
-        let stemmedWord = '';
-        for (let i = 0; i < words.length; i++) {
-            stemmedWord = this.stemWord(words[i]);
-            stemmedWords.push(stemmedWord);
-        }
+        for (let i = 0; i < words.length; i++)
+            stemmedWords.push(this.stemWord(words[i]));
         return stemmedWords;
+    }
+
+    stemWord(word) {
+        if (word.length <= 2) return word;
+
+        let basis = [];
+
+        word = word.split('-');
+        for (let i = 0; i < word.length; i++) {
+            let rvhead = this.getRV(word[i])[0];
+            let first, second, third, fourth;
+            let cuttedWord;
+            let r1head, r1, r2head, r2;
+
+            first = this.firstStep(word[i]); // первый шаг
+            if (first === false) return word;
+
+            second = this.secondStep(first); // второй шаг
+
+            cuttedWord = rvhead + second;
+            r1head = this.getR1(cuttedWord)[0];
+            r1 = this.getR1(cuttedWord)[1];
+            r2head = this.getR2(r1)[0];
+            r2 = this.getR2(r1)[1];
+
+            third = this.thirdStep(r2); // третий шаг
+
+            cuttedWord = r2head + third;
+            fourth = this.fourthStep(cuttedWord); // четвёртый шаг
+            basis.push(r1head + fourth);
+        }
+
+        if (word.length >= 2)
+            return basis.join('-');
+
+        return basis[0];
     }
 
     findEnding(endings, word) {
@@ -83,13 +116,12 @@ class StemmingClass {
     firstStep(word) {
         let reflexiveWasFound = false;
         let pg, r, a, v, n;
-        let rv = this.getRV(word)[1];;
+        let rv = this.getRV(word)[1];
 
         pg = this.findEnding(Endings.perfectiveGerund, word);
         if (pg !== false) return pg;
 
-        if (rv.length <= 2)
-            return rv;
+        if (rv === '') return false; // если RV-часть - пустая строка, то выходим из функции, т.к. работать дальше с пустой строкой бессмысленно
 
         r = this.findEnding(Endings.reflexive, rv);
         if (r !== false) {
@@ -139,31 +171,6 @@ class StemmingClass {
             return word.slice(0, word.length - 1);
 
         return word;
-    }
-
-    stemWord(word) {
-        // стэмминг для слов с дефисом 
-
-        let rvhead = this.getRV(word)[0];
-        let first, second, third, fourth;
-        let cuttedWord;
-        let r1head, r1, r2head, r2;
-
-        first = this.firstStep(word); // первый шаг
-        second = this.secondStep(first); // второй шаг
-
-        cuttedWord = rvhead + second;
-        r1head = this.getR1(cuttedWord)[0];
-        r1 = this.getR1(cuttedWord)[1];
-        r2head = this.getR2(r1)[0];
-        r2 = this.getR2(r1)[1];
-
-        third = this.thirdStep(r2); // третий шаг
-
-        cuttedWord = r1head + r2head + third;
-        fourth = this.fourthStep(cuttedWord); // четвёртый шаг
-
-        return fourth;
     }
 }
 

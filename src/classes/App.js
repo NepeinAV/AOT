@@ -1,47 +1,47 @@
 import {
     descComp,
     revComp,
-    revDescComp
+    revDescComp,
+    dblDescComp,
+    dblComp
 } from '../Sort';
-
 import StemmingClass from './Stemming';
-import WordsClass from './WordsClass';
+import WordsClass from './Words';
+import NGram from './NGram';
 
 const Stemming = new StemmingClass();
 const Words = new WordsClass();
 
 class AppClass {
     constructor() {
-        this.state = {
+        this.state = Object.freeze({
             isInputChanged: true,
             wordList: [],
-            cleanWordList: [],
             stemmedList: [],
+            nGramKeys: [],
+            nGramValues: [],
             currentList: ['wordList']
-        };
+        });
 
-        this.text = document.querySelector('textarea');
         this.input = document.querySelectorAll('textarea')[0];
         this.output = document.querySelector('.linesbox');
         this.lineNumberBox = document.querySelector('.lines');
         this.breakWordButton = document.querySelector('a[data-type=breaktext]');
-        this.cleanTextButton = document.querySelector('a[data-type=cleantext]');
+        this.stemmingButton = document.querySelector('a[data-type=stemming]');
         this.ascSortButton = document.querySelector('div[data-type=asc]');
         this.descSortButton = document.querySelector('div[data-type=desc]');
-        this.stemmingButton = document.querySelector('a[data-type=stemming]');
+        this.nGramButton = document.querySelector('.ngram');
 
         this.breakWordButtonHandler = this.breakWordButtonHandler.bind(this);
-        this.cleanTextButtonHandler = this.cleanTextButtonHandler.bind(this);
         this.stemmingButtonHandler = this.stemmingButtonHandler.bind(this);
-
         this.createListeners();
     }
 
     dispatch(state, payload) {
-        this.state = {
+        this.state = Object.freeze({
             ...state,
             ...payload
-        }
+        });
     }
 
     createElement(type, className, inner) {
@@ -55,45 +55,64 @@ class AppClass {
         return el;
     }
 
+    createLine(i, left, right) {
+        let line, inLine;
+        line = this.createElement('div', 'line');
+        inLine = this.createElement('div', 'number', i + 1);
+        line.appendChild(inLine);
+        inLine = this.createElement('div', 'word', left);
+        line.appendChild(inLine);
+        if (right) {
+            inLine = this.createElement('div', 'word', right);
+            line.appendChild(inLine);
+        }
+
+        return line;
+    }
+
     printWords(output, wordsleft, wordsright = []) {
         let line;
         let inLine;
-        if (!wordsleft.length) return false;
-
-        output.innerHTML = '';
-        wordsleft.map((val, i) => {
-            line = this.createElement('div', 'line');
-            inLine = this.createElement('div', 'number', i + 1);
-            line.appendChild(inLine);
-            inLine = this.createElement('div', 'word', wordsleft[i]);
-            line.appendChild(inLine);
-            if (wordsright.length) {
-                inLine = this.createElement('div', 'word', wordsright[i]);
-                line.appendChild(inLine);
-            }
-            output.appendChild(line)
-        });
+        if (!wordsleft.length) {
+            output.innerHTML = '';
+            output.appendChild(this.createLine(0, '', ''));
+        } else {
+            output.innerHTML = '';
+            wordsleft.map((val, i) => {
+                line = this.createLine(i, val, wordsright[i]);
+                output.appendChild(line)
+            });
+        }
     }
 
     sortHandler(e, type) {
         const {
             currentList
         } = this.state;
-        let words = [];
+        let words = [],
+            wordsl = [],
+            wordsr = [];
 
         if (typeof currentList !== 'object' || !currentList.length) return false;
 
         if (currentList.length === 2) {
-            let wordsl = [],
-                wordsr = [];
             for (let i = 0; i < this.state[currentList[0]].length; i++)
-                words.push(this.state[currentList[1]][i] + ' ' + this.state[currentList[0]][i]);
+                words.push([
+                    this.state[currentList[0]][i],
+                    this.state[currentList[1]][i]
+                ]);
+
+            if (type === descComp) {
+                type = dblDescComp;
+            } else {
+                type = dblComp;
+            }
 
             words.qsort(type);
 
             words.map((val, i) => {
-                wordsl.push(val.split(' ')[1]);
-                wordsr.push(val.split(' ')[0]);
+                wordsl.push(val[0]);
+                wordsr.push(val[1]);
             });
 
             this.printWords(this.output, wordsl, wordsr);
@@ -106,20 +125,32 @@ class AppClass {
     createListeners() {
         this.ascSortButton.addEventListener('click', e => this.sortHandler(e));
         this.descSortButton.addEventListener('click', e => this.sortHandler(e, descComp));
+        this.nGramButton.addEventListener('click', e => {
+            if (this.state.wordList.length) {
+                let ngrams = NGram.countNGrams(this.state.wordList, 3);
+                this.dispatch(this.state, {
+                    nGramKeys: Object.keys(ngrams),
+                    nGramValues: Object.values(ngrams),
+                    currentList: ['nGramKeys', 'nGramValues']
+                });
+                this.printWords(this.output, this.state.nGramKeys, this.state.nGramValues);
+            }
+        });
         this.breakWordButton.addEventListener('click', this.breakWordButtonHandler);
-        this.cleanTextButton.addEventListener('click', this.cleanTextButtonHandler);
         this.stemmingButton.addEventListener('click', this.stemmingButtonHandler);
 
-        document.querySelector('.outputbox').addEventListener('click', (e) => {
+        document.querySelector('.outputbox').addEventListener('click', e => {
             if (e.target.className === 'percent') {
                 document.querySelector('.inputbox').attributeStyleMap.set('width', CSS.percent(100 - e.target.dataset.percent));
                 document.querySelector('.outputbox').attributeStyleMap.set('width', CSS.percent(e.target.dataset.percent));
-                e.target.dataset.percent = 50 + 75 - e.target.dataset.percent;
+                e.target.dataset.percent = 125 - e.target.dataset.percent;
             }
         });
 
-        this.input.addEventListener('change', (e) => {
-            this.state.isInputChanged = true;
+        this.input.addEventListener('change', e => {
+            this.dispatch({
+                isInputChanged: true
+            });
         });
     }
 
@@ -142,7 +173,6 @@ class AppClass {
         const {
             isInputChanged,
             wordList,
-            cleanWordList,
             sortedList
         } = this.state;
 
@@ -152,96 +182,47 @@ class AppClass {
             this.dispatch(this.state, {
                 currentList: ['wordList']
             });
-
             this.printWords(this.output, wordList);
-            this.renderSteps([this.breakWordButton, this.cleanTextButton, this.stemmingButton], [true, true], [true]);
+            this.renderSteps([this.breakWordButton, this.stemmingButton], [true, true], [true]);
             return false;
         }
 
         console.log('------------------- Breaking text');
 
-        this.renderSteps([this.breakWordButton, this.cleanTextButton, this.stemmingButton], [true]);
+        this.renderSteps([this.breakWordButton, this.stemmingButton], [true]);
 
         console.time('Time of text breaking');
-        wrdList = Words.breakText(this.text.value
+        wrdList = Words.breakText(this.input.value
             .multipleSpaces()
             .hyphenSpaces()
-            .lineWrapping()
         );
-
-        // wordList = worker.postMessage({
-        //     type: 'break',
-        //     text: this.text.value
-        // });
-
         console.timeEnd('Time of text breaking');
 
         this.dispatch(this.state, {
             wordList: wrdList,
             isInputChanged: false,
-            cleanWordList: [],
             stemmedList: [],
             currentList: ['wordList']
         });
 
         this.printWords(this.output, wrdList);
-
-        this.renderSteps([this.breakWordButton, this.cleanTextButton], [true, true], [true]);
-    }
-
-    cleanTextButtonHandler(e) {
-        e.preventDefault();
-
-        const {
-            wordList,
-            cleanWordList
-        } = this.state;
-
-        let clnWords = [];
-
-        if (cleanWordList.length) {
-            this.dispatch(this.state, {
-                currentList: ['cleanWordList']
-            });
-
-            this.printWords(this.output, cleanWordList);
-            this.renderSteps([this.cleanTextButton, this.stemmingButton], [true, true], [true]);
-            return false;
-        }
-
-        if (!wordList.length) return false;
-
-        console.log('------------------- Cleaning words');
-
-        console.time('Time of word cleaning');
-        clnWords = Words.cleanWords(wordList);
-        console.timeEnd('Time of word cleaning');
-
-        this.dispatch(this.state, {
-            cleanWordList: clnWords,
-            currentList: ['cleanWordList']
-        });
-
-        //   this.printWords(cleanWordList, this.output);
-        this.printWords(this.output, clnWords);
-
-        this.renderSteps([this.cleanTextButton, this.stemmingButton], [true, true], [true]);
+        this.renderSteps([this.breakWordButton, this.stemmingButton], [true, true], [true]);
     }
 
     stemmingButtonHandler(e) {
         e.preventDefault();
 
         const {
-            cleanWordList,
+            wordList,
             stemmedList
         } = this.state;
 
         if (stemmedList.length) {
             this.dispatch(this.state, {
-                currentList: ['cleanWordList', 'stemmedList']
+                currentList: ['wordList', 'stemmedList']
             });
 
-            this.printWords(this.output, cleanWordList, stemmedList);
+            this.printWords(this.output, wordList, stemmedList);
             this.renderSteps([this.stemmingButton], [true], [true]);
             return false;
         }
@@ -249,7 +230,7 @@ class AppClass {
         console.log('------------------- Stemming words');
 
         let stmList = [];
-        let sorted = cleanWordList.slice();
+        let sorted = wordList.slice();
 
         console.time('Time of stemming');
         stmList = Stemming.stemWords(sorted);
@@ -257,13 +238,11 @@ class AppClass {
 
         this.dispatch(this.state, {
             stemmedList: stmList,
-            currentList: ['cleanWordList', 'stemmedList']
+            currentList: ['wordList', 'stemmedList']
         });
 
-        this.printWords(this.output, cleanWordList, stmList);
+        this.printWords(this.output, wordList, stmList);
         this.renderSteps([this.stemmingButton], [true], [true]);
-
-        console.log(this.state);
     }
 }
 

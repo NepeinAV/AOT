@@ -8,8 +8,8 @@
 
 nav {
     position: absolute;
-    left: 0;
-    top: 530px;
+    bottom: 0;
+    left: 0; // top: 530px;
     right: 0; // background: #efefef;
     display: flex;
     align-items: center;
@@ -69,7 +69,7 @@ section {
     overflow: hidden;
     position: absolute;
     width: 25%;
-    height: 530px;
+    height: ~"calc(100vh - 59px)";
     left: 0;
     border-right: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
@@ -85,13 +85,13 @@ section {
         .percent {
             float: right;
             margin-left: 10px;
-            border: 2px solid #444;
+            border: 2px solid #000;
             width: 18px;
             height: 18px;
             &:before {
                 content: '';
                 height: 16px;
-                border-left: 2px solid #444;
+                border-left: 2px solid #000;
                 margin-left: 3px;
                 display: block;
                 transition: all 0.1s ease-in-out;
@@ -122,6 +122,15 @@ section {
                 width: 35px;
             }
         }
+        .ngram {
+            font-weight: 600;
+            float: right;
+            font-size: 18px;
+            margin-top: -2px;
+            border-right: 1px solid #ddd;
+            padding-right: 8px;
+            cursor: pointer;
+        }
     }
 }
 
@@ -134,7 +143,7 @@ section.outputbox {
     .lines {
         position: absolute;
         padding: 10px;
-        text-align: right; // background: #fbfbfb;
+        text-align: right;
         min-height: 100%;
         min-width: 45px;
         span {
@@ -144,18 +153,16 @@ section.outputbox {
         }
     }
     textarea {
-        float: left; // display: inline-block; // padding-left: 51px;
-        margin-left: 0px; // width: ~"calc(100% - 45px)";
+        float: left;
+        margin-left: 0px;
         width: ~"calc(50% + 24px)";
         &:first-of-type {
-            width: ~"calc(50% + 24px)"; // position: relative;
-            // z-index: 1;
+            width: ~"calc(50% + 24px)";
         }
         &:last-of-type {
             width: 50%;
             margin-left: -24px;
-            border-left: 1px solid #ddd; // position: relative;
-            // z-index: 2;
+            border-left: 1px solid #ddd;
         }
     }
     .arrow {
@@ -192,7 +199,7 @@ section>textarea {
 
 .linesbox {
     overflow-y: scroll;
-    height: 495px;
+    height: ~"calc(100% - 34px)";
     .line {
         display: flex;
         height: 25px;
@@ -205,10 +212,9 @@ section>textarea {
         }
         .number {
             min-width: 50px;
-            text-align: right; // padding: 5px 0;
+            text-align: right;
         }
         .word {
-            // padding: 5px 0;
             padding-left: 20px;
             width: 100%;
             &:nth-of-type(3) {
