@@ -85,7 +85,7 @@ class AppClass {
         }
     }
 
-    sortHandler(e, type) {
+    sortHandler(e, params) {
         const {
             currentList
         } = this.state;
@@ -102,11 +102,8 @@ class AppClass {
                     this.state[currentList[1]][i]
                 ]);
 
-            if (type === descComp) {
-                type = dblDescComp;
-            } else {
-                type = dblComp;
-            }
+            let type = (params.order === 'desc') ? dblDescComp : dblComp;
+
 
             words.qsort(type);
 
@@ -117,14 +114,19 @@ class AppClass {
 
             this.printWords(this.output, wordsl, wordsr);
         } else {
+            let type = (params.order === 'desc') ? descComp : undefined;
             let wordsleft = this.state[currentList[0]].slice();
             this.printWords(this.output, wordsleft.qsort(type));
         }
     }
 
     createListeners() {
-        this.ascSortButton.addEventListener('click', e => this.sortHandler(e));
-        this.descSortButton.addEventListener('click', e => this.sortHandler(e, descComp));
+        this.ascSortButton.addEventListener('click', e => this.sortHandler(e, {
+            order: 'asc'
+        }));
+        this.descSortButton.addEventListener('click', e => this.sortHandler(e, {
+            order: 'desc'
+        }));
         this.nGramButton.addEventListener('click', e => {
             if (this.state.wordList.length) {
                 let ngrams = NGram.countNGrams(this.state.wordList, 3);
