@@ -85,48 +85,52 @@ class AppClass {
         }
     }
 
-    sortHandler(e, params) {
+    sortHandler(e, params = {}) {
         const {
             currentList
         } = this.state;
+
         let words = [],
             wordsl = [],
             wordsr = [];
 
+        let side, aside, type;
+
         if (typeof currentList !== 'object' || !currentList.length) return false;
 
         if (currentList.length === 2) {
+            if (params.hasOwnProperty('side')) side = params.side;
+            else side = 1;
+            aside = (side) ? 0 : 1;
+
+            if (params.hasOwnProperty('order')) type = (params.order === 'desc') ? dblDescComp : dblComp;
+            else type = dblComp;
+
             for (let i = 0; i < this.state[currentList[0]].length; i++)
-                words.push([
-                    this.state[currentList[0]][i],
-                    this.state[currentList[1]][i]
-                ]);
+                words.push([this.state[currentList[aside]][i], this.state[currentList[side]][i]]);
 
-            let type = (params.order === 'desc') ? dblDescComp : dblComp;
-
-
-            words.qsort(type);
-
-            words.map((val, i) => {
-                wordsl.push(val[0]);
-                wordsr.push(val[1]);
+            words.qsort(type).map(val => {
+                wordsl.push(val[aside]);
+                wordsr.push(val[side]);
             });
 
             this.printWords(this.output, wordsl, wordsr);
         } else {
-            let type = (params.order === 'desc') ? descComp : undefined;
+            let type;
+            if (params.hasOwnProperty('order'))
+                type = (params.order === 'desc') ? descComp : undefined;
+
             let wordsleft = this.state[currentList[0]].slice();
             this.printWords(this.output, wordsleft.qsort(type));
         }
     }
 
     createListeners() {
-        this.ascSortButton.addEventListener('click', e => this.sortHandler(e, {
-            order: 'asc'
-        }));
+        this.ascSortButton.addEventListener('click', e => this.sortHandler(e));
         this.descSortButton.addEventListener('click', e => this.sortHandler(e, {
             order: 'desc'
         }));
+
         this.nGramButton.addEventListener('click', e => {
             if (this.state.wordList.length) {
                 let ngrams = NGram.countNGrams(this.state.wordList, 3);

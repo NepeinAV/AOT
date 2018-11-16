@@ -58,7 +58,10 @@ class StemmingClass {
             let r1head, r1, r2head, r2;
 
             first = this.firstStep(word[i]); // первый шаг
-            if (first === false) return word;
+            if (first === false) {
+                basis.push(word[i]);
+                continue;
+            }
 
             second = this.secondStep(first); // второй шаг
 
