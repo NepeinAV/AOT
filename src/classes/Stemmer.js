@@ -1,6 +1,6 @@
-import * as Endings from '../endings';
+import * as Endings from './data/endings';
 
-class StemmingClass {
+class StemmerClass {
     constructor() {
         this.vowels = ['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я'];
         this.vowelCodes = [1072, 1077, 1105, 1080, 1086, 1091, 1099, 1101, 1102, 1103];
@@ -53,9 +53,15 @@ class StemmingClass {
         word = word.split('-');
         for (let i = 0; i < word.length; i++) {
             let rvhead = this.getRV(word[i])[0];
-            let first, second, third, fourth;
+            let first,
+                second,
+                third,
+                fourth;
             let cuttedWord;
-            let r1head, r1, r2head, r2;
+            let r1head,
+                r1,
+                r2head,
+                r2;
 
             first = this.firstStep(word[i]); // первый шаг
             if (first === false) {
@@ -118,7 +124,11 @@ class StemmingClass {
 
     firstStep(word) {
         let reflexiveWasFound = false;
-        let pg, r, a, v, n;
+        let pg,
+            r,
+            a,
+            v,
+            n;
         let rv = this.getRV(word)[1];
 
         pg = this.findEnding(Endings.perfectiveGerund, word);
@@ -177,4 +187,4 @@ class StemmingClass {
     }
 }
 
-export default StemmingClass;
+export default StemmerClass;

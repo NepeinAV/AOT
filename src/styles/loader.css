@@ -2,9 +2,8 @@
     display: inline-block;
     position: absolute;
     width: 64px;
-    height: 64px;
-    left: 60px;
-    top: calc(50% - 32px);
+    margin-left: 60px;
+    margin-top: -13px;
     z-index: 4;
     pointer-events: none;
     opacity: 0;

@@ -5,11 +5,15 @@ import {
     dblDescComp,
     dblComp
 } from '../Sort';
-import StemmingClass from './Stemming';
+
+import StemmerClass from './Stemmer';
 import WordsClass from './Words';
 import NGram from './NGram';
+import Descriptor from './Descriptor';
+import Base64 from './Base64';
+import SearchEngine from './SearchEngine';
 
-const Stemming = new StemmingClass();
+const Stemmer = new StemmerClass();
 const Words = new WordsClass();
 
 class AppClass {
@@ -20,20 +24,26 @@ class AppClass {
             stemmedList: [],
             nGramKeys: [],
             nGramValues: [],
+            descriptorsKeys: [],
+            descriptorsValues: [],
             currentList: ['wordList']
         });
 
-        this.input = document.querySelectorAll('textarea')[0];
+        this.input = document.querySelector('textarea');
         this.output = document.querySelector('.linesbox');
         this.lineNumberBox = document.querySelector('.lines');
+        this.searchButton = document.querySelector('.searchbutton');
+        this.search = document.querySelector('.search');
         this.breakWordButton = document.querySelector('a[data-type=breaktext]');
         this.stemmingButton = document.querySelector('a[data-type=stemming]');
+        this.podButton = document.querySelector('a[data-type=pod]');
         this.ascSortButton = document.querySelector('div[data-type=asc]');
         this.descSortButton = document.querySelector('div[data-type=desc]');
         this.nGramButton = document.querySelector('.ngram');
 
         this.breakWordButtonHandler = this.breakWordButtonHandler.bind(this);
         this.stemmingButtonHandler = this.stemmingButtonHandler.bind(this);
+        this.podButtonHandler = this.podButtonHandler.bind(this);
         this.createListeners();
     }
 
@@ -56,7 +66,8 @@ class AppClass {
     }
 
     createLine(i, left, right) {
-        let line, inLine;
+        let line,
+            inLine;
         line = this.createElement('div', 'line');
         inLine = this.createElement('div', 'number', i + 1);
         line.appendChild(inLine);
@@ -70,7 +81,7 @@ class AppClass {
         return line;
     }
 
-    printWords(output, wordsleft, wordsright = []) {
+    print(output, wordsleft, wordsright = []) {
         let line;
         let inLine;
         if (!wordsleft.length) {
@@ -94,17 +105,23 @@ class AppClass {
             wordsl = [],
             wordsr = [];
 
-        let side, aside, type;
+        let side,
+            aside,
+            type;
 
         if (typeof currentList !== 'object' || !currentList.length) return false;
 
         if (currentList.length === 2) {
-            if (params.hasOwnProperty('side')) side = params.side;
-            else side = 1;
+            if (params.hasOwnProperty('side'))
+                side = params.side;
+            else
+                side = 1;
             aside = (side) ? 0 : 1;
 
-            if (params.hasOwnProperty('order')) type = (params.order === 'desc') ? dblDescComp : dblComp;
-            else type = dblComp;
+            if (params.hasOwnProperty('order'))
+                type = (params.order === 'desc') ? dblDescComp : dblComp;
+            else
+                type = dblComp;
 
             for (let i = 0; i < this.state[currentList[0]].length; i++)
                 words.push([this.state[currentList[aside]][i], this.state[currentList[side]][i]]);
@@ -114,14 +131,14 @@ class AppClass {
                 wordsr.push(val[side]);
             });
 
-            this.printWords(this.output, wordsl, wordsr);
+            this.print(this.output, wordsl, wordsr);
         } else {
             let type;
             if (params.hasOwnProperty('order'))
                 type = (params.order === 'desc') ? descComp : undefined;
 
             let wordsleft = this.state[currentList[0]].slice();
-            this.printWords(this.output, wordsleft.qsort(type));
+            this.print(this.output, wordsleft.qsort(type));
         }
     }
 
@@ -131,6 +148,11 @@ class AppClass {
             order: 'desc'
         }));
 
+        this.searchButton.addEventListener('click', e => {
+            this.search.attributeStyleMap.set('opacity', '1');
+            this.search.querySelector('.searchinput').classList.add('animation');
+        })
+
         this.nGramButton.addEventListener('click', e => {
             if (this.state.wordList.length) {
                 let ngrams = NGram.countNGrams(this.state.wordList, 3);
@@ -139,16 +161,16 @@ class AppClass {
                     nGramValues: Object.values(ngrams),
                     currentList: ['nGramKeys', 'nGramValues']
                 });
-                this.printWords(this.output, this.state.nGramKeys, this.state.nGramValues);
+                this.print(this.output, this.state.nGramKeys, this.state.nGramValues);
             }
         });
         this.breakWordButton.addEventListener('click', this.breakWordButtonHandler);
         this.stemmingButton.addEventListener('click', this.stemmingButtonHandler);
+        this.podButton.addEventListener('click', this.podButtonHandler);
 
         document.querySelector('.outputbox').addEventListener('click', e => {
             if (e.target.className === 'percent') {
-                document.querySelector('.inputbox').attributeStyleMap.set('width', CSS.percent(100 - e.target.dataset.percent));
-                document.querySelector('.outputbox').attributeStyleMap.set('width', CSS.percent(e.target.dataset.percent));
+                document.querySelector('main').attributeStyleMap.set('grid-template-columns', `${CSS.percent(100 - e.target.dataset.percent)} ${CSS.percent(e.target.dataset.percent)}`);
                 e.target.dataset.percent = 125 - e.target.dataset.percent;
             }
         });
@@ -188,21 +210,17 @@ class AppClass {
             this.dispatch(this.state, {
                 currentList: ['wordList']
             });
-            this.printWords(this.output, wordList);
-            this.renderSteps([this.breakWordButton, this.stemmingButton], [true, true], [true]);
+            this.print(this.output, wordList);
+            this.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true, true], [true]);
             return false;
         }
 
-        console.log('------------------- Breaking text');
+        this.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true]);
 
-        this.renderSteps([this.breakWordButton, this.stemmingButton], [true]);
+        wrdList = Words.breakText(this.input.value.multipleSpaces().hyphenSpaces());
 
-        console.time('Time of text breaking');
-        wrdList = Words.breakText(this.input.value
-            .multipleSpaces()
-            .hyphenSpaces()
-        );
-        console.timeEnd('Time of text breaking');
+        this.print(this.output, wrdList);
+        this.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true, true], [true]);
 
         this.dispatch(this.state, {
             wordList: wrdList,
@@ -210,9 +228,6 @@ class AppClass {
             stemmedList: [],
             currentList: ['wordList']
         });
-
-        this.printWords(this.output, wrdList);
-        this.renderSteps([this.breakWordButton, this.stemmingButton], [true, true], [true]);
     }
 
     stemmingButtonHandler(e) {
@@ -228,27 +243,48 @@ class AppClass {
                 currentList: ['wordList', 'stemmedList']
             });
 
-            this.printWords(this.output, wordList, stemmedList);
-            this.renderSteps([this.stemmingButton], [true], [true]);
+            this.print(this.output, wordList, stemmedList);
+            this.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
             return false;
         }
-
-        console.log('------------------- Stemming words');
 
         let stmList = [];
         let sorted = wordList.slice();
 
-        console.time('Time of stemming');
-        stmList = Stemming.stemWords(sorted);
-        console.timeEnd('Time of stemming');
+        stmList = Stemmer.stemWords(sorted);
+
+        this.print(this.output, wordList, stmList);
+        this.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
 
         this.dispatch(this.state, {
             stemmedList: stmList,
             currentList: ['wordList', 'stemmedList']
         });
+    }
 
-        this.printWords(this.output, wordList, stmList);
-        this.renderSteps([this.stemmingButton], [true], [true]);
+    podButtonHandler(e) {
+        const {
+            stemmedList
+        } = this.state;
+
+        e.preventDefault();
+
+        let stm = stemmedList.slice();
+        let descriptors = Descriptor.getDescriptors(stm);
+
+        localStorage.setItem(Base64.encodeBase64(this.state.wordList.slice(0, 5).join(' ')), JSON.stringify({
+            descriptors: Object.keys(descriptors),
+            type: 'document'
+        }));
+
+        this.print(this.output, Object.keys(descriptors), Object.values(descriptors));
+        this.renderSteps([this.podButton], [true], [true]);
+
+        this.dispatch(this.state, {
+            descriptorsKeys: Object.keys(descriptors),
+            descriptorsValues: Object.values(descriptors),
+            currentList: ['descriptorsKeys', 'descriptorsValues']
+        });
     }
 }
 
