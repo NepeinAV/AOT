@@ -286,6 +286,27 @@ main {
     animation: 0.1s ease-in-out 0.05s fadeIn both;
 }
 
+.close {
+    background: #fff;
+    &:before,
+    &:after {
+        content: '';
+        width: 3px;
+        height: 21px;
+        background: #000;
+        position: absolute;
+        transform-origin: center;
+        left: 23px;
+        top: 14px;
+    }
+    &:before {
+        transform: rotateZ(45deg);
+    }
+    &:after {
+        transform: rotateZ(-45deg);
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

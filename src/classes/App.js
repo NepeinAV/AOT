@@ -12,6 +12,7 @@ import NGram from './NGram';
 import Descriptor from './Descriptor';
 import Base64 from './Base64';
 import SearchEngine from './SearchEngine';
+import DOM from './DOM';
 
 const Stemmer = new StemmerClass();
 const Words = new WordsClass();
@@ -20,6 +21,7 @@ class AppClass {
     constructor() {
         this.state = Object.freeze({
             isInputChanged: true,
+            isSearchBoxOpen: false,
             wordList: [],
             stemmedList: [],
             nGramKeys: [],
@@ -34,6 +36,8 @@ class AppClass {
         this.lineNumberBox = document.querySelector('.lines');
         this.searchButton = document.querySelector('.searchbutton');
         this.search = document.querySelector('.search');
+        this.searchInput = document.querySelector('.searchinput');
+        this.documentsBox = document.querySelector('.documents');
         this.breakWordButton = document.querySelector('a[data-type=breaktext]');
         this.stemmingButton = document.querySelector('a[data-type=stemming]');
         this.podButton = document.querySelector('a[data-type=pod]');
@@ -52,48 +56,6 @@ class AppClass {
             ...state,
             ...payload
         });
-    }
-
-    createElement(type, className, inner) {
-        let el;
-        el = document.createElement(type);
-        if (className)
-            el.className = className;
-        if (inner)
-            el.innerHTML = inner;
-
-        return el;
-    }
-
-    createLine(i, left, right) {
-        let line,
-            inLine;
-        line = this.createElement('div', 'line');
-        inLine = this.createElement('div', 'number', i + 1);
-        line.appendChild(inLine);
-        inLine = this.createElement('div', 'word', left);
-        line.appendChild(inLine);
-        if (right) {
-            inLine = this.createElement('div', 'word', right);
-            line.appendChild(inLine);
-        }
-
-        return line;
-    }
-
-    print(output, wordsleft, wordsright = []) {
-        let line;
-        let inLine;
-        if (!wordsleft.length) {
-            output.innerHTML = '';
-            output.appendChild(this.createLine(0, '', ''));
-        } else {
-            output.innerHTML = '';
-            wordsleft.map((val, i) => {
-                line = this.createLine(i, val, wordsright[i]);
-                output.appendChild(line)
-            });
-        }
     }
 
     sortHandler(e, params = {}) {
@@ -131,14 +93,14 @@ class AppClass {
                 wordsr.push(val[side]);
             });
 
-            this.print(this.output, wordsl, wordsr);
+            DOM.print(this.output, wordsl, wordsr);
         } else {
             let type;
             if (params.hasOwnProperty('order'))
                 type = (params.order === 'desc') ? descComp : undefined;
 
             let wordsleft = this.state[currentList[0]].slice();
-            this.print(this.output, wordsleft.qsort(type));
+            DOM.print(this.output, wordsleft.qsort(type));
         }
     }
 
@@ -149,9 +111,32 @@ class AppClass {
         }));
 
         this.searchButton.addEventListener('click', e => {
-            this.search.attributeStyleMap.set('opacity', '1');
-            this.search.querySelector('.searchinput').classList.add('animation');
-        })
+            if (!this.state.isSearchBoxOpen) {
+                this.search.attributeStyleMap.set('opacity', '1');
+                this.search.attributeStyleMap.set('pointer-events', 'unset');
+                this.searchInput.classList.add('animation');
+                this.documentsBox.classList.add('animation');
+                this.searchButton.classList.add('close');
+            } else {
+                this.search.attributeStyleMap.set('opacity', '0');
+                this.search.attributeStyleMap.set('pointer-events', 'none');
+                this.searchInput.classList.remove('animation');
+                this.documentsBox.classList.remove('animation');
+                this.searchButton.classList.remove('close');
+            }
+
+            this.dispatch(this.state, {
+                isSearchBoxOpen: !this.state.isSearchBoxOpen
+            });
+        });
+
+        this.searchInput.addEventListener('change', e => {
+            if (e.target.value.trim() !== '') {
+                let poz = SearchEngine.handleRequest(this.searchInput.value);
+                let r = SearchEngine.calculateR(poz, this.state.descriptorsKeys);
+                DOM.printDocuments(this.documentsBox, r);
+            }
+        });
 
         this.nGramButton.addEventListener('click', e => {
             if (this.state.wordList.length) {
@@ -161,7 +146,7 @@ class AppClass {
                     nGramValues: Object.values(ngrams),
                     currentList: ['nGramKeys', 'nGramValues']
                 });
-                this.print(this.output, this.state.nGramKeys, this.state.nGramValues);
+                DOM.print(this.output, this.state.nGramKeys, this.state.nGramValues);
             }
         });
         this.breakWordButton.addEventListener('click', this.breakWordButtonHandler);
@@ -182,18 +167,6 @@ class AppClass {
         });
     }
 
-    renderSteps(steps, visible = [], active = []) {
-        steps.map((val, i) => {
-            if (visible[i]) val.classList.add('animate');
-            else val.classList.remove('animate');
-            if (active[i]) val.classList.add('active');
-            else val.classList.remove('active');
-        });
-    }
-
-    loader(state) {
-        document.querySelector('.lds-ellipsis').attributeStyleMap.set('opacity', (state) ? '1' : '0');
-    }
 
     breakWordButtonHandler(e) {
         e.preventDefault();
@@ -210,17 +183,17 @@ class AppClass {
             this.dispatch(this.state, {
                 currentList: ['wordList']
             });
-            this.print(this.output, wordList);
-            this.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true, true], [true]);
+            DOM.print(this.output, wordList);
+            DOM.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true, true], [true]);
             return false;
         }
 
-        this.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true]);
+        DOM.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true]);
 
         wrdList = Words.breakText(this.input.value.multipleSpaces().hyphenSpaces());
 
-        this.print(this.output, wrdList);
-        this.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true, true], [true]);
+        DOM.print(this.output, wrdList);
+        DOM.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true, true], [true]);
 
         this.dispatch(this.state, {
             wordList: wrdList,
@@ -243,8 +216,8 @@ class AppClass {
                 currentList: ['wordList', 'stemmedList']
             });
 
-            this.print(this.output, wordList, stemmedList);
-            this.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
+            DOM.print(this.output, wordList, stemmedList);
+            DOM.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
             return false;
         }
 
@@ -253,8 +226,8 @@ class AppClass {
 
         stmList = Stemmer.stemWords(sorted);
 
-        this.print(this.output, wordList, stmList);
-        this.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
+        DOM.print(this.output, wordList, stmList);
+        DOM.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
 
         this.dispatch(this.state, {
             stemmedList: stmList,
@@ -277,8 +250,8 @@ class AppClass {
             type: 'document'
         }));
 
-        this.print(this.output, Object.keys(descriptors), Object.values(descriptors));
-        this.renderSteps([this.podButton], [true], [true]);
+        DOM.print(this.output, Object.keys(descriptors), Object.values(descriptors));
+        DOM.renderSteps([this.podButton], [true], [true]);
 
         this.dispatch(this.state, {
             descriptorsKeys: Object.keys(descriptors),
