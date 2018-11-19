@@ -133,8 +133,16 @@ class AppClass {
         this.searchInput.addEventListener('change', e => {
             if (e.target.value.trim() !== '') {
                 let poz = SearchEngine.handleRequest(this.searchInput.value);
-                let r = SearchEngine.calculateR(poz, this.state.descriptorsKeys);
-                DOM.printDocuments(this.documentsBox, r);
+                let r = SearchEngine.calculateR(poz);
+                this.search.style.background = 'rgba(255,255,255, 0.95)';
+                this.documentsBox.attributeStyleMap.set('padding-left', CSS.px(15));
+                if (!DOM.printDocuments(this.documentsBox, r)) {
+                    this.documentsBox.textContent = 'По вашему запросу ничего не найдено';
+                    this.documentsBox.attributeStyleMap.set('padding-left', CSS.px(20));
+                }
+            } else {
+                this.documentsBox.innerHTML = '';
+                this.search.style.background = 'rgba(0, 0, 0, 0.2)';
             }
         });
 
@@ -247,6 +255,7 @@ class AppClass {
 
         localStorage.setItem(Base64.encodeBase64(this.state.wordList.slice(0, 5).join(' ')), JSON.stringify({
             descriptors: Object.keys(descriptors),
+            n: Object.values(descriptors),
             type: 'document'
         }));
 

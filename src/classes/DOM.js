@@ -65,7 +65,7 @@ class DOM {
                 let doc = this.createElement('div', 'document');
                 let num = this.createElement('div', 'num', count);
                 doc.appendChild(num);
-                num = this.createElement('div', 'title', keys[i]);
+                num = this.createElement('div', 'title', keys[i] + '...');
                 doc.appendChild(num);
                 num = this.createElement('div', 'docinfo', `Релевантность: ${values[i]}%`);
                 doc.appendChild(num);
@@ -73,6 +73,8 @@ class DOM {
                 docBox.appendChild(doc);
             }
         }
+
+        return count;
     }
 }
 
