@@ -13,9 +13,11 @@ import Descriptor from './Descriptor';
 import Base64 from './Base64';
 import SearchEngine from './SearchEngine';
 import DOM from './DOM';
+import Worker from 'worker-loader?inline=true&name=worker.bundle.js!../worker.js';
 
 const Stemmer = new StemmerClass();
 const Words = new WordsClass();
+const worker = new Worker();
 
 class AppClass {
     constructor() {
@@ -74,34 +76,32 @@ class AppClass {
         if (typeof currentList !== 'object' || !currentList.length) return false;
 
         if (currentList.length === 2) {
-            if (params.hasOwnProperty('side'))
-                side = params.side;
-            else
-                side = 1;
-            aside = (side) ? 0 : 1;
+            if (params.hasOwnProperty('side')) side = params.side;
+            else side = 1;
 
-            if (params.hasOwnProperty('order'))
-                type = (params.order === 'desc') ? dblDescComp : dblComp;
-            else
-                type = dblComp;
+            if (params.hasOwnProperty('order')) {
+                if (params.order === 'desc') type = (a, b) => (a[side] > b[side]) ? 1 : 0;
+                else type = (a, b) => (a[side] < b[side]) ? 1 : 0;
+            } else type = (a, b) => (a[side] < b[side]) ? 1 : 0;
 
             for (let i = 0; i < this.state[currentList[0]].length; i++)
-                words.push([this.state[currentList[aside]][i], this.state[currentList[side]][i]]);
+                words.push([this.state[currentList[0]][i], this.state[currentList[1]][i]]);
 
             words.qsort(type).map(val => {
-                wordsl.push(val[aside]);
-                wordsr.push(val[side]);
+                wordsl.push(val[0]);
+                wordsr.push(val[1]);
             });
 
             DOM.print(this.output, wordsl, wordsr);
         } else {
-            let type;
             if (params.hasOwnProperty('order'))
                 type = (params.order === 'desc') ? descComp : undefined;
 
-            let wordsleft = this.state[currentList[0]].slice();
-            DOM.print(this.output, wordsleft.qsort(type));
+            let words = this.state[currentList[0]].slice();
+
+            DOM.print(this.output, words.qsort(type));
         }
+
     }
 
     createListeners() {

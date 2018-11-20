@@ -4,6 +4,7 @@ Array.prototype.swap = function (a, b) {
     this[a] = temp;
 }
 
+// сортировка вставками
 Array.prototype.isort = function (compareFn, left = 0, right = this.length - 1) {
     for (let i = left + 1; i <= right; i++)
         for (let j = i; j > 0 && compareFn(this[j], this[j - 1]); j--)
@@ -12,6 +13,7 @@ Array.prototype.isort = function (compareFn, left = 0, right = this.length - 1) 
     return this;
 }
 
+// быстрая сортировка
 Array.prototype.qsort = function (compareFn, left = 0, right = this.length - 1) {
     if (compareFn === undefined) {
         compareFn = (a, b) => {
@@ -35,7 +37,6 @@ Array.prototype.qsort = function (compareFn, left = 0, right = this.length - 1) 
     }
 
     if (left < j) this.qsort(compareFn, left, j);
-
     if (right > i) this.qsort(compareFn, i, right);
 
     return this;
