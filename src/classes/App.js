@@ -43,13 +43,16 @@ class AppClass {
         this.breakWordButton = document.querySelector('a[data-type=breaktext]');
         this.stemmingButton = document.querySelector('a[data-type=stemming]');
         this.podButton = document.querySelector('a[data-type=pod]');
+        this.buttons = [this.breakWordButton, this.stemmingButton, this.podButton];
         this.ascSortButton = document.querySelector('div[data-type=asc]');
         this.descSortButton = document.querySelector('div[data-type=desc]');
         this.nGramButton = document.querySelector('.ngram');
+        this.fileLoader = document.querySelector('#fileloader');
 
         this.breakWordButtonHandler = this.breakWordButtonHandler.bind(this);
         this.stemmingButtonHandler = this.stemmingButtonHandler.bind(this);
         this.podButtonHandler = this.podButtonHandler.bind(this);
+        this.workerHandler = this.workerHandler.bind(this);
         this.createListeners();
     }
 
@@ -105,6 +108,16 @@ class AppClass {
     }
 
     createListeners() {
+        let reader = new FileReader();
+        reader.addEventListener('loadend', e => {
+            this.input.value = e.target.result;
+        });
+
+        this.fileLoader.addEventListener('change', e => {
+            let file = e.target.files[0]
+            // if (file.name.split('.')[1] === 'txt')
+            reader.readAsText(file);
+        });
         this.ascSortButton.addEventListener('click', e => this.sortHandler(e));
         this.descSortButton.addEventListener('click', e => this.sortHandler(e, {
             order: 'desc'
@@ -173,8 +186,53 @@ class AppClass {
                 isInputChanged: true
             });
         });
+
+        worker.addEventListener('message', this.workerHandler);
     }
 
+    workerHandler(e) {
+        let message = e.data;
+        if (message.action === 'break') {
+            DOM.print(this.output, message.result);
+            DOM.renderSteps(this.buttons, [true, true], [true]);
+
+            this.dispatch(this.state, {
+                wordList: message.result,
+                isInputChanged: false,
+                stemmedList: [],
+                currentList: ['wordList']
+            });
+        } else if (message.action === 'stem') {
+            DOM.print(this.output, this.state.wordList, message.result);
+            DOM.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
+
+            this.dispatch(this.state, {
+                stemmedList: message.result,
+                currentList: ['wordList', 'stemmedList']
+            });
+        } else if (message.action === 'descriptors') {
+            let keys = Object.keys(message.result);
+            let values = Object.values(message.result);
+
+            localStorage.setItem(Base64.encodeBase64(this.state.wordList.slice(0, 5).join(' ')), JSON.stringify({
+                descriptors: keys,
+                n: values,
+                type: 'document'
+            }));
+
+            DOM.print(this.output, keys, values);
+            DOM.renderSteps([this.podButton], [true], [true]);
+
+            this.dispatch(this.state, {
+                descriptorsKeys: keys,
+                descriptorsValues: values,
+                currentList: ['descriptorsKeys', 'descriptorsValues']
+            });
+        } else {
+            console.log(e.data.error);
+        }
+        DOM.loader(false);
+    }
 
     breakWordButtonHandler(e) {
         e.preventDefault();
@@ -192,22 +250,15 @@ class AppClass {
                 currentList: ['wordList']
             });
             DOM.print(this.output, wordList);
-            DOM.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true, true], [true]);
+            DOM.renderSteps(this.buttons, [true, true], [true]);
             return false;
         }
 
-        DOM.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true]);
+        DOM.loader(true);
 
-        wrdList = Words.breakText(this.input.value.multipleSpaces().hyphenSpaces());
-
-        DOM.print(this.output, wrdList);
-        DOM.renderSteps([this.breakWordButton, this.stemmingButton, this.podButton], [true, true], [true]);
-
-        this.dispatch(this.state, {
-            wordList: wrdList,
-            isInputChanged: false,
-            stemmedList: [],
-            currentList: ['wordList']
+        worker.postMessage({
+            action: 'break',
+            text: this.input.value.multipleSpaces().hyphenSpaces()
         });
     }
 
@@ -229,17 +280,11 @@ class AppClass {
             return false;
         }
 
-        let stmList = [];
-        let sorted = wordList.slice();
+        DOM.loader(true);
 
-        stmList = Stemmer.stemWords(sorted);
-
-        DOM.print(this.output, wordList, stmList);
-        DOM.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
-
-        this.dispatch(this.state, {
-            stemmedList: stmList,
-            currentList: ['wordList', 'stemmedList']
+        worker.postMessage({
+            action: 'stem',
+            words: wordList.slice()
         });
     }
 
@@ -250,22 +295,11 @@ class AppClass {
 
         e.preventDefault();
 
-        let stm = stemmedList.slice();
-        let descriptors = Descriptor.getDescriptors(stm);
+        DOM.loader(true);
 
-        localStorage.setItem(Base64.encodeBase64(this.state.wordList.slice(0, 5).join(' ')), JSON.stringify({
-            descriptors: Object.keys(descriptors),
-            n: Object.values(descriptors),
-            type: 'document'
-        }));
-
-        DOM.print(this.output, Object.keys(descriptors), Object.values(descriptors));
-        DOM.renderSteps([this.podButton], [true], [true]);
-
-        this.dispatch(this.state, {
-            descriptorsKeys: Object.keys(descriptors),
-            descriptorsValues: Object.values(descriptors),
-            currentList: ['descriptorsKeys', 'descriptorsValues']
+        worker.postMessage({
+            action: 'descriptors',
+            words: stemmedList.slice()
         });
     }
 }

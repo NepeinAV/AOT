@@ -1,5 +1,3 @@
-import App from './App';
-
 class WordsClass {
     constructor() {
         this.goodSymbols = [

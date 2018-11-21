@@ -4,6 +4,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Calibri, sans-serif;
+    font-size: 16px;
 }
 
 main {
@@ -92,6 +93,17 @@ main {
             background: #fff;
             z-index: 2;
             box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+            #fileloader {
+                display: none;
+            }
+            .fileloader {
+                background: url('../img/file-download-solid.svg') no-repeat 0/100%;
+                width: 18px;
+                height: 18px;
+                float: right;
+                margin-top: 2px;
+                cursor: pointer;
+            }
             .percent {
                 margin-left: 9px;
                 border: 2px solid #000;
@@ -221,7 +233,8 @@ main {
     position: absolute;
     top: 0;
     height: 100vh;
-    width: 100vw;
+    right: 0;
+    left: 0;
     z-index: 2;
     background: rgba(0, 0, 0, 0.2);
     transition: all 0.1s ease-in-out;
@@ -327,5 +340,15 @@ main {
         opacity: 1;
         transform: translateY(0px);
         pointer-events: unset;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    main {
+        grid-template-rows: 1fr 1fr 59px !important;
+        grid-template-columns: 100% !important;
+        .percent {
+            display: none;
+        }
     }
 }

@@ -1,19 +1,34 @@
-import './prototypes/Array';
 import './prototypes/String';
-import * as S from './Sort';
+import './prototypes/Array';
+import WordsClass from './classes/Words';
+import StemmerClass from './classes/Stemmer';
+import Descriptor from './classes/Descriptor';
+
+const Words = new WordsClass();
+const Stemmer = new StemmerClass();
 
 onmessage = (e) => {
-    let arr = [],
-        type;
-    if (e.data.action === 'sort') {
-        if (e.data.hasOwnProperty('order'))
-            type = (e.data.order === 'desc') ? S.descComp : undefined;
-        console.time();
-        let sorted = e.data.arr.qsort(type);
-        console.timeEnd();
+    try {
+        if (e.data.action === 'break') {
+            postMessage({
+                action: 'break',
+                result: Words.breakText(e.data.text)
+            });
+        } else if (e.data.action === 'stem') {
+            postMessage({
+                action: 'stem',
+                result: Stemmer.stemWords(e.data.words)
+            });
+        } else if (e.data.action === 'descriptors') {
+            postMessage({
+                action: e.data.action,
+                result: Descriptor.getDescriptors(e.data.words)
+            });
+        }
+    } catch (err) {
         postMessage({
-            action: 'sort1',
-            result: sorted
-        });
+            action: 'error',
+            error: err.stack
+        })
     }
 }
