@@ -76,10 +76,6 @@ class DOM {
 
         return count;
     }
-
-    static uploadFile() {
-
-    }
 }
 
 export default DOM;

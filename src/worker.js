@@ -20,6 +20,7 @@ onmessage = (e) => {
                 result: Stemmer.stemWords(e.data.words)
             });
         } else if (e.data.action === 'descriptors') {
+            console.table(Descriptor.getDescriptors(e.data.words));
             postMessage({
                 action: e.data.action,
                 result: Descriptor.getDescriptors(e.data.words)

@@ -8,6 +8,10 @@ String.prototype.in = function (symbols = [], position = 0) {
     return symbols.find(val => val === this.charCodeAt(position));
 }
 
+String.prototype.reverseStr = function () {
+    return this.split('').reverse().join('');
+}
+
 // уничтожает двойные, тройные, ... пробелы
 String.prototype.multipleSpaces = function () {
     let newText = '';

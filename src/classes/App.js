@@ -24,6 +24,7 @@ class AppClass {
         this.state = Object.freeze({
             isInputChanged: true,
             isSearchBoxOpen: false,
+            direction: 1,
             wordList: [],
             stemmedList: [],
             nGramKeys: [],
@@ -47,6 +48,7 @@ class AppClass {
         this.ascSortButton = document.querySelector('div[data-type=asc]');
         this.descSortButton = document.querySelector('div[data-type=desc]');
         this.nGramButton = document.querySelector('.ngram');
+        this.directionButton = document.querySelector('.direction');
         this.fileLoader = document.querySelector('#fileloader');
 
         this.breakWordButtonHandler = this.breakWordButtonHandler.bind(this);
@@ -65,7 +67,8 @@ class AppClass {
 
     sortHandler(e, params = {}) {
         const {
-            currentList
+            currentList,
+            direction
         } = this.state;
 
         let words = [],
@@ -87,12 +90,15 @@ class AppClass {
                 else type = (a, b) => (a[side] < b[side]) ? 1 : 0;
             } else type = (a, b) => (a[side] < b[side]) ? 1 : 0;
 
-            for (let i = 0; i < this.state[currentList[0]].length; i++)
-                words.push([this.state[currentList[0]][i], this.state[currentList[1]][i]]);
+            for (let i = 0; i < this.state[currentList[0]].length; i++) {
+                let left = (direction) ? this.state[currentList[0]][i] : this.state[currentList[0]][i].toString().reverseStr();
+                let right = (direction) ? this.state[currentList[1]][i] : this.state[currentList[1]][i].toString().reverseStr();
+                words.push([left, right]);
+            }
 
             words.qsort(type).map(val => {
-                wordsl.push(val[0]);
-                wordsr.push(val[1]);
+                wordsl.push((direction) ? val[0] : val[0].toString().reverseStr());
+                wordsr.push((direction) ? val[1] : val[1].toString().reverseStr());
             });
 
             DOM.print(this.output, wordsl, wordsr);
@@ -102,7 +108,14 @@ class AppClass {
 
             let words = this.state[currentList[0]].slice();
 
-            DOM.print(this.output, words.qsort(type));
+            if (!direction) {
+                words = words.map(val => val.toString().reverseStr());
+                words = words.qsort(type).map(val => val.toString().reverseStr());
+            } else {
+                words = words.qsort(type);
+            }
+
+            DOM.print(this.output, words);
         }
 
     }
@@ -115,13 +128,19 @@ class AppClass {
 
         this.fileLoader.addEventListener('change', e => {
             let file = e.target.files[0]
-            // if (file.name.split('.')[1] === 'txt')
             reader.readAsText(file);
         });
         this.ascSortButton.addEventListener('click', e => this.sortHandler(e));
         this.descSortButton.addEventListener('click', e => this.sortHandler(e, {
             order: 'desc'
         }));
+
+        this.directionButton.addEventListener('click', e => {
+            this.directionButton.attributeStyleMap.set('transform', `rotateZ(${CSS.deg((this.state.direction) ? 180 : 0)})`);
+            this.dispatch(this.state, {
+                direction: !this.state.direction
+            })
+        });
 
         this.searchButton.addEventListener('click', e => {
             if (!this.state.isSearchBoxOpen) {
@@ -214,7 +233,7 @@ class AppClass {
             let keys = Object.keys(message.result);
             let values = Object.values(message.result);
 
-            localStorage.setItem(Base64.encodeBase64(this.state.wordList.slice(0, 5).join(' ')), JSON.stringify({
+            localStorage.setItem(Base64.encodeBase64(this.state.wordList.slice(0, 10).join(' ')), JSON.stringify({
                 descriptors: keys,
                 n: values,
                 type: 'document'
