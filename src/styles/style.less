@@ -93,6 +93,9 @@ main {
             background: #fff;
             z-index: 2;
             box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+            span {
+                align-self: center;
+            }
             #fileloader {
                 display: none;
             }
@@ -169,6 +172,12 @@ main {
         .info {
             display: grid;
             grid-template-columns: auto 1fr repeat(4, auto);
+        }
+    }
+    section.inputbox {
+        .info {
+            display: grid;
+            grid-template-columns: 1fr 18px;
         }
     }
     .linesbox {

@@ -1,22 +1,20 @@
 import {
     descComp,
-    revComp,
-    revDescComp,
     dblDescComp,
     dblComp
-} from '../Sort';
+} from '../SortMethods';
 
-import StemmerClass from './Stemmer';
-import WordsClass from './Words';
+// import StemmerClass from './Stemmer';
+// import WordsClass from './Words';
 import NGram from './NGram';
-import Descriptor from './Descriptor';
+// import Descriptor from './Descriptor';
 import Base64 from './Base64';
 import SearchEngine from './SearchEngine';
 import DOM from './DOM';
 import Worker from 'worker-loader?inline=true&name=worker.bundle.js!../worker.js';
 
-const Stemmer = new StemmerClass();
-const Words = new WordsClass();
+// const Stemmer = new StemmerClass();
+// const Words = new WordsClass();
 const worker = new Worker();
 
 class AppClass {
@@ -124,6 +122,9 @@ class AppClass {
         let reader = new FileReader();
         reader.addEventListener('loadend', e => {
             this.input.value = e.target.result;
+            this.dispatch(this.state, {
+                isInputChanged: true
+            })
         });
 
         this.fileLoader.addEventListener('change', e => {
@@ -233,7 +234,7 @@ class AppClass {
             let keys = Object.keys(message.result);
             let values = Object.values(message.result);
 
-            localStorage.setItem(Base64.encodeBase64(this.state.wordList.slice(0, 10).join(' ')), JSON.stringify({
+            localStorage.setItem(Base64.encodeBase64(this.input.value.split(' ', 7).join(' ')), JSON.stringify({
                 descriptors: keys,
                 n: values,
                 type: 'document'

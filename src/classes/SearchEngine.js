@@ -3,7 +3,7 @@ import WordsClass from './Words';
 import StemmerClass from './Stemmer';
 import {
     dblDescComp
-} from '../Sort';
+} from '../SortMethods';
 
 const Words = new WordsClass();
 const Stemmer = new StemmerClass();

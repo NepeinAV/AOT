@@ -8,6 +8,21 @@ String.prototype.in = function (symbols = [], position = 0) {
     return symbols.find(val => val === this.charCodeAt(position));
 }
 
+String.prototype.split = function (char, length = -1) {
+    let words = [];
+    let word = '';
+    for (let i = 0; i < this.length; i++) {
+        if (words.length === length) return words;
+        if (this[i] !== char) word += this[i];
+        else {
+            words.push(word);
+            word = '';
+        }
+    }
+    if (word.trim() !== '') words.push(word);
+    return words;
+}
+
 String.prototype.reverseStr = function () {
     return this.split('').reverse().join('');
 }

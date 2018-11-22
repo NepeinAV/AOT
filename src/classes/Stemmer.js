@@ -2,16 +2,21 @@ import * as Endings from './data/endings';
 
 class StemmerClass {
     constructor() {
-        this.vowels = ['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я'];
+        // this.vowels = ['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я'];
         this.vowelCodes = [1072, 1077, 1105, 1080, 1086, 1091, 1099, 1101, 1102, 1103];
-        this.consonants = ['б', 'в', 'г', 'д', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ'];
+        // this.consonants = ['б', 'в', 'г', 'д', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ'];
         this.consonantCodes = [1073, 1074, 1075, 1076, 1078, 1079, 1081, 1082, 1083, 1084, 1085, 1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1096, 1097];
     }
 
     getRV(word) {
         let i = 0;
+        let found = false;
         while (i < word.length - 1) {
-            if (word[i].in(this.consonantCodes) && word[i + 1].in(this.vowelCodes))
+            if (word[i].in(this.consonantCodes) && !found) {
+                found = true;
+                continue;
+            }
+            if (found && word[i + 1].in(this.vowelCodes))
                 return [word.slice(0, i += 2), word.slice(i)];
             i++;
         }
@@ -20,8 +25,13 @@ class StemmerClass {
 
     getR1(word) {
         let i = 0;
+        let found = false;
         while (i < word.length - 1) {
-            if (word[i].in(this.vowelCodes) && word[i + 1].in(this.consonantCodes))
+            if (word[i].in(this.vowelCodes) && !found) {
+                found = true;
+                continue;
+            }
+            if (found && word[i + 1].in(this.consonantCodes))
                 return [word.slice(0, i += 2), word.slice(i)];
             i++;
         }
@@ -30,8 +40,13 @@ class StemmerClass {
 
     getR2(r1) {
         let i = 0;
+        let found = false;
         while (i < r1.length - 1) {
-            if (r1[i].in(this.vowelCodes) && r1[i + 1].in(this.consonantCodes))
+            if (r1[i].in(this.vowelCodes) && !found) {
+                found = true;
+                continue;
+            }
+            if (found && r1[i + 1].in(this.consonantCodes))
                 return [r1.slice(0, i += 2), r1.slice(i)];
             i++;
         }
