@@ -58,16 +58,3 @@ String.prototype.lineWrapping = function () {
             newText += this[i];
     return newText;
 }
-
-// TODO: f(): уничтожает дефис, если он использован в качестве переноса строки
-// String.prototype.hyphenEndString = function () {
-//     let newtext = '';
-//     for (let i = 0; i < this.length; i++) {
-//         if (this.charCodeAt(i) === 45 && this.charCodeAt(i + 1) === 10) {
-//             i++;
-//         } else {
-//             newtext += this[i];
-//         }
-//     }
-//     return newtext;
-// }

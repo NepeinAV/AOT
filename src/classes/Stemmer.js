@@ -10,13 +10,8 @@ class StemmerClass {
 
     getRV(word) {
         let i = 0;
-        let found = false;
         while (i < word.length - 1) {
-            if (word[i].in(this.consonantCodes) && !found) {
-                found = true;
-                continue;
-            }
-            if (found && word[i + 1].in(this.vowelCodes))
+            if (word[i].in(this.consonantCodes) && word[i + 1].in(this.vowelCodes))
                 return [word.slice(0, i += 2), word.slice(i)];
             i++;
         }
@@ -25,13 +20,8 @@ class StemmerClass {
 
     getR1(word) {
         let i = 0;
-        let found = false;
         while (i < word.length - 1) {
-            if (word[i].in(this.vowelCodes) && !found) {
-                found = true;
-                continue;
-            }
-            if (found && word[i + 1].in(this.consonantCodes))
+            if (word[i].in(this.vowelCodes) && word[i + 1].in(this.consonantCodes))
                 return [word.slice(0, i += 2), word.slice(i)];
             i++;
         }
@@ -40,13 +30,8 @@ class StemmerClass {
 
     getR2(r1) {
         let i = 0;
-        let found = false;
         while (i < r1.length - 1) {
-            if (r1[i].in(this.vowelCodes) && !found) {
-                found = true;
-                continue;
-            }
-            if (found && r1[i + 1].in(this.consonantCodes))
+            if (r1[i].in(this.vowelCodes) && r1[i + 1].in(this.consonantCodes))
                 return [r1.slice(0, i += 2), r1.slice(i)];
             i++;
         }
@@ -61,22 +46,21 @@ class StemmerClass {
     }
 
     stemWord(word) {
+        let rvhead,
+            r1,
+            r2;
+        let first,
+            second,
+            third,
+            fourth;
+
         if (word.length <= 2) return word;
 
         let basis = [];
 
         word = word.split('-');
         for (let i = 0; i < word.length; i++) {
-            let rvhead = this.getRV(word[i])[0];
-            let first,
-                second,
-                third,
-                fourth;
-            let cuttedWord;
-            let r1head,
-                r1,
-                r2head,
-                r2;
+            rvhead = this.getRV(word[i])[0];
 
             first = this.firstStep(word[i]); // первый шаг
             if (first === false) {
@@ -85,18 +69,14 @@ class StemmerClass {
             }
 
             second = this.secondStep(first); // второй шаг
+            r1 = this.getR1(rvhead + second);
+            r2 = this.getR2(r1[1]);
 
-            cuttedWord = rvhead + second;
-            r1head = this.getR1(cuttedWord)[0];
-            r1 = this.getR1(cuttedWord)[1];
-            r2head = this.getR2(r1)[0];
-            r2 = this.getR2(r1)[1];
+            third = this.thirdStep(r2[1]); // третий шаг
 
-            third = this.thirdStep(r2); // третий шаг
-
-            cuttedWord = r2head + third;
-            fourth = this.fourthStep(cuttedWord); // четвёртый шаг
-            basis.push(r1head + fourth);
+            let cuttedWord = this.getRV(r1[0] + r2[0] + third);
+            fourth = this.fourthStep(cuttedWord[1]); // четвёртый шаг
+            basis.push(cuttedWord[0] + fourth);
         }
 
         if (word.length >= 2)
@@ -105,7 +85,7 @@ class StemmerClass {
         return basis[0];
     }
 
-    findEnding(endings, word) {
+    findEnding(endings, word, has = false) {
         let ending = '';
         let find = [];
         let pos = 0;
@@ -118,20 +98,10 @@ class StemmerClass {
                 pos = word.length - lengths[i];
                 ending = word.slice(pos);
 
-                if (endings.length === 3)
-                    find = (word[pos - 1] === 'я' || word[pos - 1] === 'а') ? endings[0] : endings[1];
-                else
-                    find = endings[0];
+                find = (endings.length === 3) ? ((word.in([1072, 1103], pos - 1) || (word[pos - 1] === undefined && has)) ? endings[0] : endings[1]) : endings[0];
 
-                if (ending.inString(find)) {
-                    word = word.slice(0, word.length - ending.length);
-                    if (endings === this.adjective) {
-                        let p = this.findEnding(this.participle, word);
-                        if (p !== false)
-                            word = p;
-                    }
-                    return word;
-                }
+                if (ending.inString(find))
+                    return this.unDoubleN(word.slice(0, word.length - ending.length));
             }
         }
         return false;
@@ -139,34 +109,32 @@ class StemmerClass {
 
     firstStep(word) {
         let reflexiveWasFound = false;
-        let pg,
-            r,
-            a,
-            v,
-            n;
+        let p, res;
+        let rvhead = this.getRV(word)[0];
         let rv = this.getRV(word)[1];
 
-        pg = this.findEnding(Endings.perfectiveGerund, word);
-        if (pg !== false) return pg;
+        res = this.findEnding(Endings.perfectiveGerund, word);
+        if (res !== false) return this.getRV(res)[1];
 
         if (rv === '') return false; // если RV-часть - пустая строка, то выходим из функции, т.к. работать дальше с пустой строкой бессмысленно
 
-        r = this.findEnding(Endings.reflexive, rv);
-        if (r !== false) {
-            reflexiveWasFound = true;
-            rv = r;
+        res = this.findEnding(Endings.reflexive, rv);
+        if (res !== false)
+            reflexiveWasFound = true, rv = this.unDoubleN(res);
+
+        res = this.findEnding(Endings.adjective, rv);
+        if (res !== false) {
+            p = this.findEnding(Endings.participle, res, !!rvhead[rvhead.length - 1].inString(['а', 'я']));
+            return (p !== false) ? p : res;
         }
 
-        a = this.findEnding(Endings.adjective, rv);
-        if (a != false) return a;
-
-        v = this.findEnding(Endings.verb, rv);
-        if (v !== false) return rv = v;
+        res = this.findEnding(Endings.verb, rv, !!rvhead[rvhead.length - 1].inString(['а', 'я']));
+        if (res !== false) return res;
 
         if (!reflexiveWasFound) {
-            n = this.findEnding(Endings.noun, rv);
-            if (n !== false)
-                return rv = n;
+            res = this.findEnding(Endings.noun, rv);
+            if (res !== false)
+                return res;
         }
 
         return rv;
@@ -181,23 +149,28 @@ class StemmerClass {
     thirdStep(word) {
         if (word.length >= 3) {
             let d = this.findEnding(Endings.derivational, word);
-            return (d != false) ? d : word;
+            return (d !== false) ? d : word;
         }
         return word;
     }
 
     fourthStep(word) {
         let s;
-
-        if (word[word.length - 1] === 'н' && word[word.length - 2] === 'н')
-            return word.slice(0, word.length - 1);
+        s = this.unDoubleN(word);
+        if (s !== word) return s;
 
         s = this.findEnding(Endings.superlative, word);
-        if (s !== false) return s;
+        if (s !== false) return this.unDoubleN(s);
 
         if (word[word.length - 1] === 'ь')
             return word.slice(0, word.length - 1);
 
+        return word;
+    }
+
+    unDoubleN(word) {
+        if (word[word.length - 1] === 'н' && word[word.length - 2] === 'н')
+            return word.slice(0, word.length - 1);
         return word;
     }
 }

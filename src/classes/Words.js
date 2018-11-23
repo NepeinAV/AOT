@@ -13,8 +13,7 @@ class WordsClass {
         let words = [];
         let word = '';
         for (let i = 0; i < text.length; i++) {
-            // if (text.in([32, 65279, 10, 13], i)) {
-            if (this.goodSymbol(text.charCodeAt(i)) || (text.charCodeAt(i) === 45 && this.hyphen(text, i))) {
+            if (this.goodSymbol(text.charCodeAt(i)) || (text.in([45, 8208], i) && this.hyphen(text, i))) {
                 word += text[i];
             } else {
                 if (word.trim() !== '') {

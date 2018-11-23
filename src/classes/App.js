@@ -54,6 +54,7 @@ class AppClass {
         this.podButtonHandler = this.podButtonHandler.bind(this);
         this.workerHandler = this.workerHandler.bind(this);
         this.createListeners();
+        // console.log(Stemmer.stemWord('взявшись'))
     }
 
     dispatch(state, payload) {
@@ -128,7 +129,7 @@ class AppClass {
         });
 
         this.fileLoader.addEventListener('change', e => {
-            let file = e.target.files[0]
+            let file = e.target.files[0];
             reader.readAsText(file);
         });
         this.ascSortButton.addEventListener('click', e => this.sortHandler(e));
@@ -249,7 +250,7 @@ class AppClass {
                 currentList: ['descriptorsKeys', 'descriptorsValues']
             });
         } else {
-            console.log(e.data.error);
+            console.error(e.data.error);
         }
         DOM.loader(false);
     }
