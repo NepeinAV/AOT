@@ -7,6 +7,14 @@
     font-size: 16px;
 }
 
+.arrow(@size, @color) {
+    border: @size solid transparent;
+    border-bottom: @size solid @color;
+    position: absolute;
+    top: -2*@size;
+    left: e(%("calc(50% - %d)", @size/2));
+}
+
 main {
     display: grid;
     height: 100vh;
@@ -357,6 +365,17 @@ main {
         opacity: 1;
         transform: translateY(0px);
         pointer-events: unset;
+    }
+}
+
+@keyframes notifierFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px);
     }
 }
 
