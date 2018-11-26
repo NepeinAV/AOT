@@ -8,12 +8,14 @@ String.prototype.in = function (symbols = [], position = 0) {
     return symbols.find(val => val === this.charCodeAt(position));
 }
 
-String.prototype.split = function (char, length = -1) {
+String.prototype.split = function (char = '', length = -1) {
     let words = [];
     let word = '';
     for (let i = 0; i < this.length; i++) {
         if (words.length === length) return words;
-        if (this[i] !== char) word += this[i];
+        if (char === '') {
+            words.push(this[i]);
+        } else if (this[i] !== char) word += this[i];
         else {
             words.push(word);
             word = '';
@@ -24,7 +26,10 @@ String.prototype.split = function (char, length = -1) {
 }
 
 String.prototype.reverseStr = function () {
-    return this.split('').reverse().join('');
+    let word = '';
+    for (let i = this.length - 1; i >= 0; i--)
+        word += this[i];
+    return word;
 }
 
 // уничтожает двойные, тройные, ... пробелы
@@ -43,18 +48,8 @@ String.prototype.hyphenSpaces = function () {
     let newText = '';
     for (let i = 0; i < this.length; i++)
         if (this.in([32, 160, 65279], i)) {
-            if (this.charCodeAt(i + 1) !== 45 && this.charCodeAt(i - 1) !== 45) newText += this[i]
+            if (!this.in([45, 8208], i - 1) && !this.in([45, 8208], i + 1)) newText += this[i]
         } else
-            newText += this[i];
-    return newText;
-}
-
-String.prototype.lineWrapping = function () {
-    let newText = '';
-    for (let i = 0; i < this.length; i++)
-        if (this.in([10, 13], i))
-            newText += ' ';
-        else
             newText += this[i];
     return newText;
 }

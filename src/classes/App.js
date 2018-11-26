@@ -62,32 +62,29 @@ class AppClass {
             ...state,
             ...payload
         });
+
+        console.info(this.state);
     }
 
-    sortHandler(e, params = {}) {
+    getSortedArray(params) {
         const {
             currentList,
             direction
         } = this.state;
 
+        let side,
+            type;
+
         let words = [],
             wordsl = [],
             wordsr = [];
 
-        let side,
-            aside,
-            type;
-
-        if (typeof currentList !== 'object' || !currentList.length) return false;
-
         if (currentList.length === 2) {
-            if (params.hasOwnProperty('side')) side = params.side;
-            else side = 1;
+            side = (params.hasOwnProperty('side')) ? params.side : 1;
+            type = (a, b) => (a[side] < b[side]) ? 1 : 0;
 
-            if (params.hasOwnProperty('order')) {
-                if (params.order === 'desc') type = (a, b) => (a[side] > b[side]) ? 1 : 0;
-                else type = (a, b) => (a[side] < b[side]) ? 1 : 0;
-            } else type = (a, b) => (a[side] < b[side]) ? 1 : 0;
+            if (params.hasOwnProperty('order') && params.order === 'desc')
+                type = (a, b) => (a[side] > b[side]) ? 1 : 0;
 
             for (let i = 0; i < this.state[currentList[0]].length; i++) {
                 let left = (direction) ? this.state[currentList[0]][i] : this.state[currentList[0]][i].toString().reverseStr();
@@ -100,12 +97,12 @@ class AppClass {
                 wordsr.push((direction) ? val[1] : val[1].toString().reverseStr());
             });
 
-            DOM.print(this.output, wordsl, wordsr);
+            return [wordsl, wordsr];
         } else {
             if (params.hasOwnProperty('order'))
                 type = (params.order === 'desc') ? descComp : undefined;
 
-            let words = this.state[currentList[0]].slice();
+            words = this.state[currentList[0]].slice();
 
             if (!direction) {
                 words = words.map(val => val.toString().reverseStr());
@@ -113,10 +110,19 @@ class AppClass {
             } else {
                 words = words.qsort(type);
             }
-
-            DOM.print(this.output, words);
+            return [words];
         }
+    }
 
+    sortHandler(e, params = {}) {
+        const {
+            currentList
+        } = this.state;
+
+        if (typeof currentList !== 'object' || !currentList.length) return false;
+
+        let array = this.getSortedArray(params);
+        DOM.print(this.output, ...array);
     }
 
     createListeners() {
