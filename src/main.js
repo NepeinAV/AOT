@@ -1,5 +1,5 @@
 import './prototypes/String';
-import './prototypes/Array';
+import './classes/Sort';
 
 import AppClass from './classes/App';
 

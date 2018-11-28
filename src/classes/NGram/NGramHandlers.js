@@ -1,5 +1,5 @@
 import DOM from '../DOM';
-import NGram from '../NGram';
+import NGram from './';
 
 class NGramHandleClass {
     constructor(store) {

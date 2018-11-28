@@ -1,4 +1,4 @@
-class ReaderHandleClass {
+class FileReaderClass {
     constructor(store) {
         this.store = store;
 
@@ -28,4 +28,4 @@ class ReaderHandleClass {
     }
 }
 
-export default ReaderHandleClass;
+export default FileReaderClass;

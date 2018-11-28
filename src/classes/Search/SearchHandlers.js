@@ -1,5 +1,5 @@
 import DOM from '../DOM';
-import SearchEngine from '../SearchEngine';
+import SearchEngine from './index.js';
 
 class SearchHandleClass {
     constructor(store) {
@@ -29,13 +29,11 @@ class SearchHandleClass {
             this.search.attributeStyleMap.set('opacity', '1');
             this.search.attributeStyleMap.set('pointer-events', 'unset');
             this.searchBox.classList.add('animation');
-            this.documentsBox.classList.add('animation');
             this.searchButton.classList.add('close');
         } else {
             this.search.attributeStyleMap.set('opacity', '0');
             this.search.attributeStyleMap.set('pointer-events', 'none');
             this.searchBox.classList.remove('animation');
-            this.documentsBox.classList.remove('animation');
             this.searchButton.classList.remove('close');
         }
         this.dispatch({
@@ -60,9 +58,13 @@ class SearchHandleClass {
                 this.documentsBox.textContent = 'По вашему запросу ничего не найдено';
                 this.documentsBox.attributeStyleMap.set('padding-left', CSS.px(20));
             }
+            this.documentsBox.attributeStyleMap.set('animation', '0.15s ease-in-out 0.15s fadeIn both');
         } else {
             this.weightBox.innerHTML = '';
             this.weightBox.classList.remove('animation');
+            this.documentsBox.attributeStyleMap.set('animation', 'none');
+
+            // this.documentsBox.classList.remove('animation');
             this.documentsBox.innerHTML = '';
             this.search.style.background = 'rgba(0, 0, 0, 0.2)';
         }

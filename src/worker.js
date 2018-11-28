@@ -1,8 +1,8 @@
 import './prototypes/String';
-import './prototypes/Array';
+import './classes/Sort';
 import WordsClass from './classes/Words';
 import StemmerClass from './classes/Stemmer';
-import Descriptor from './classes/Descriptor';
+import Descriptor from './classes/Descriptors';
 
 const Words = new WordsClass();
 const Stemmer = new StemmerClass();

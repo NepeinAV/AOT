@@ -1,9 +1,9 @@
-import Base64 from './Base64';
-import WordsClass from './Words';
-import StemmerClass from './Stemmer';
+import Base64 from '../other/Base64';
+import WordsClass from '../Words';
+import StemmerClass from '../stemmer';
 import {
     dblDescComp
-} from '../SortMethods';
+} from '../Sort/sortmethods';
 
 const Words = new WordsClass();
 const Stemmer = new StemmerClass();

@@ -76,7 +76,7 @@ class DOM {
                 doc.appendChild(num);
                 num = this.createElement('div', 'docinfo', `Релевантность: ${values[i]}%`);
                 doc.appendChild(num);
-                doc.classList.add('animation');
+                // doc.classList.add('animation');
                 docBox.appendChild(doc);
             }
         }

@@ -2,7 +2,7 @@ import DOM from '../DOM';
 import NGram from '../NGram';
 import {
     descComp
-} from '../../SortMethods';
+} from './sortmethods';
 
 class SortHandleClass {
     constructor(store) {

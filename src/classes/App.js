@@ -1,12 +1,12 @@
-import SearchHandleClass from './handlers/SearchHandle';
-import NGramHandleClass from './handlers/NGramHandle';
-import SortHandleClass from './handlers/SortHandle';
-import ReaderHandleClass from './handlers/ReaderHandle';
-import StepsHandleClass from './handlers/StepsHandle';
+import SearchHandleClass from './search/SearchHandlers';
+import NGramHandleClass from './NGram/NGramHandlers';
+import SortHandleClass from './Sort/SortHandlers';
+import ReaderHandleClass from './FileReader/FileReaderHandlers';
+import StepsHandleClass from './Steps/StepsHandlers';
 import Storage from './Storage';
 import {
     initialState
-} from './data/initialState';
+} from './Storage/data/initialState';
 
 const Store = new Storage(initialState);
 const SearchHandle = new SearchHandleClass(Store);
