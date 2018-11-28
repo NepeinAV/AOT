@@ -15,6 +15,8 @@ class Descriptor {
     }
 
     static compressDescriptors(descriptors) {
+        word = word.split('-');
+        if (word.length === 1) word = word[0].split(String.fromCharCode(8208));
         let d = [];
         let keys = Object.keys(descriptors);
         let values = Object.values(descriptors);
