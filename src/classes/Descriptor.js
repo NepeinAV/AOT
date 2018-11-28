@@ -36,6 +36,24 @@ class Descriptor {
         return descriptors;
     }
 
+    static concatDescriptors(descriptors) {
+        let allD = JSON.parse(localStorage.getItem('allDescriptors'));
+        let keys = Object.keys(descriptors);
+        let values = Object.values(descriptors);
+        if (allD) {
+            for (let i = 0; i < keys.length; i++) {
+                if (allD.hasOwnProperty(keys[i])) {
+                    allD[keys[i]] += values[i];
+                } else {
+                    allD[keys[i]] = values[i];
+                }
+            }
+            localStorage.setItem('allDescriptors', JSON.stringify(allD));
+        } else {
+            localStorage.setItem('allDescriptors', JSON.stringify(descriptors));
+        }
+    }
+
     static getDescriptors(words) {
         let descriptors = this.countDescriptors(words);
         this.cleanDescriptors(descriptors);

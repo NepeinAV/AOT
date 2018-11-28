@@ -267,12 +267,27 @@ main {
     .searchbox {
         padding: 0 15px;
         width: 100vw;
-        top: 0;
-        height: 80px;
+        top: 0; // height: 80px;
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
+        .weights {
+            max-width: 1000px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 15px 0 10px 0px;
+            .weight {
+                padding: 10px 15px;
+                border: 1px solid #efefef;
+                background: #fff;
+                border-radius: 21px;
+                margin-right: 10px;
+            }
+        }
         input {
+            margin-top: 20px;
             max-width: 1000px;
             width: 100%;
             height: 50px;
@@ -330,10 +345,6 @@ main {
     animation: 0.15s ease-in-out 0.05s fadeIn both;
 }
 
-.animation_rev {
-    animation: 0.15s ease-in-out 0.05s fadeIn reverse;
-}
-
 .close {
     background: #fff;
     &:before,
@@ -368,7 +379,7 @@ main {
     }
 }
 
-@keyframes notifierFadeIn {
+@keyframes fadeInDown {
     from {
         opacity: 0;
         transform: translateY(-30px);

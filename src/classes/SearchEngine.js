@@ -33,30 +33,29 @@ class SearchEngine {
 
         А вес остальных слов ПОЗ по такой же формуле, но number будет равен числу вхождений этого слова в документ, которое было подсчитано на этапе создания ПОД.
     */
-    static calcWeights(poz, descriptors, n) {
+    static calcWeights(poz) {
         let sum = 0;
         let count = 0;
         let number = 0;
         let weights = [];
 
+        let allD = JSON.parse(localStorage.getItem('allDescriptors'));
+
         for (let i = 0; i < poz.length; i++) {
-            let index = descriptors.indexOf(poz[i]);
-            if (index !== -1) {
+            if (allD.hasOwnProperty(poz[i])) {
                 count++;
-                sum += n[index];
+                sum += allD[poz[i]];
             }
         }
 
         if (count === poz.length) {
             for (let i = 0; i < poz.length; i++)
-                weights.push(n[descriptors.indexOf(poz[i])] / sum);
+                weights.push(allD[poz[i]] / sum);
         } else if (count > 0 && count < poz.length) {
             number = sum / count;
             sum += number * (poz.length - count);
-            for (let i = 0; i < poz.length; i++) {
-                let index = descriptors.indexOf(poz[i]);
-                weights.push((index !== -1) ? n[index] / sum : number / sum);
-            }
+            for (let i = 0; i < poz.length; i++)
+                weights.push((allD.hasOwnProperty(poz[i])) ? allD[poz[i]] / sum : number / sum);
         } else {
             for (let i = 0; i < poz.length; i++)
                 weights.push(1 / poz.length);
@@ -65,7 +64,7 @@ class SearchEngine {
         return weights;
     }
 
-    static calculateR(poz) {
+    static calculateR(poz, weights) {
         let doc,
             docsR = {},
             docsCount = 0,
@@ -77,7 +76,6 @@ class SearchEngine {
                 doc = JSON.parse(localStorage.getItem(localStorage.key(i)));
                 if (doc.type === 'document') {
                     docsCount++;
-                    let weights = this.calcWeights(poz, doc.descriptors, doc.n);
                     for (let i = 0; i < poz.length; i++) {
                         let dIndex = doc.descriptors.indexOf(poz[i]);
                         if (dIndex !== -1) {

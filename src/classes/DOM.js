@@ -54,6 +54,13 @@ class DOM {
         }
     }
 
+    static printWeights(wBox, poz, weights) {
+        wBox.innerHTML = '';
+        for (let i = 0; i < weights.length; i++) {
+            wBox.appendChild(this.createElement('div', 'weight', poz[i] + ': ' + Math.round(weights[i] * 100) / 100));
+        }
+    }
+
     static printDocuments(docBox, docs) {
         docBox.innerHTML = '';
         let keys = Object.keys(docs);
