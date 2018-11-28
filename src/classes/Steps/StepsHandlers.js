@@ -53,7 +53,7 @@ class StepsHandleClass {
             let values = Object.values(message.result);
             let name = Base64.encodeBase64(this.input.value.split(' ', 7).join(' '));
 
-            if (!localStorage.getItem(name)) {
+            if (keys.length && !localStorage.getItem(name)) {
                 Descriptor.concatDescriptors(message.result);
                 localStorage.setItem(name, JSON.stringify({
                     descriptors: keys,

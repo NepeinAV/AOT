@@ -58,13 +58,11 @@ class SearchHandleClass {
                 this.documentsBox.textContent = 'По вашему запросу ничего не найдено';
                 this.documentsBox.attributeStyleMap.set('padding-left', CSS.px(20));
             }
-            this.documentsBox.attributeStyleMap.set('animation', '0.15s ease-in-out 0.15s fadeIn both');
+            this.documentsBox.style.animation = '0.15s ease-in-out 0.08s fadeIn both';
         } else {
+            this.documentsBox.style.animation = 'unset';
             this.weightBox.innerHTML = '';
             this.weightBox.classList.remove('animation');
-            this.documentsBox.attributeStyleMap.set('animation', 'none');
-
-            // this.documentsBox.classList.remove('animation');
             this.documentsBox.innerHTML = '';
             this.search.style.background = 'rgba(0, 0, 0, 0.2)';
         }

@@ -50,6 +50,7 @@ class StemmerClass {
         let basis = [];
 
         word = word.split('-');
+        if (word.length === 1) word = word[0].split(String.fromCharCode(8208));
         for (let i = 0; i < word.length; i++) {
             rvhead = this.getRV(word[i])[0];
 
