@@ -24,15 +24,19 @@ class SearchHandleClass {
         return this.store.dispatch;
     }
 
+    get docCount() {
+        return +localStorage.getItem('docCount');
+    }
+
     searchButtonHandler(e) {
         if (!this.state.isSearchBoxOpen) {
-            this.search.attributeStyleMap.set('opacity', '1');
-            this.search.attributeStyleMap.set('pointer-events', 'unset');
+            this.search.style.opacity = 1;
+            this.search.style.pointerEvents = 'unset';
             this.searchBox.classList.add('animation');
             this.searchButton.classList.add('close');
         } else {
-            this.search.attributeStyleMap.set('opacity', '0');
-            this.search.attributeStyleMap.set('pointer-events', 'none');
+            this.search.style.opacity = 0;
+            this.search.style.pointerEvents = 'none';
             this.searchBox.classList.remove('animation');
             this.searchButton.classList.remove('close');
         }
@@ -44,19 +48,21 @@ class SearchHandleClass {
     searchInputHandler(e) {
         let poz, weights, r = [];
         if (e.target.value.trim() !== '') {
-            poz = SearchEngine.handleRequest(this.searchInput.value);
-            weights = SearchEngine.calcWeights(poz);
-            r = SearchEngine.calculateR(poz, weights);
-
             this.search.style.background = 'rgba(255,255,255, 0.95)';
-            this.documentsBox.attributeStyleMap.set('padding-left', CSS.px(15));
-
-            DOM.printWeights(this.weightBox, poz, weights);
-            this.weightBox.classList.add('animation');
-
-            if (!DOM.printDocuments(this.documentsBox, r)) {
-                this.documentsBox.textContent = 'По вашему запросу ничего не найдено';
-                this.documentsBox.attributeStyleMap.set('padding-left', CSS.px(20));
+            this.documentsBox.style.paddingLeft = '15px';
+            if (!this.docCount) {
+                this.documentsBox.textContent = 'Проиндексируйте хотя бы один документ';
+                this.documentsBox.style.paddingLeft = '20px';
+            } else {
+                poz = SearchEngine.handleRequest(this.searchInput.value);
+                weights = SearchEngine.calcWeights(poz);
+                r = SearchEngine.calculateR(poz, weights);
+                DOM.printWeights(this.weightBox, poz, weights);
+                this.weightBox.classList.add('animation');
+                if (!DOM.printDocuments(this.documentsBox, r)) {
+                    this.documentsBox.textContent = 'По вашему запросу ничего не найдено';
+                    this.documentsBox.style.paddingLeft = '20px';
+                }
             }
             this.documentsBox.style.animation = '0.15s ease-in-out 0.08s fadeIn both';
         } else {

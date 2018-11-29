@@ -40,6 +40,7 @@ class SearchEngine {
         let weights = [];
 
         let allD = JSON.parse(localStorage.getItem('allDescriptors'));
+        if (!allD) return false;
 
         for (let i = 0; i < poz.length; i++) {
             if (allD.hasOwnProperty(poz[i])) {

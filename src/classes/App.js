@@ -48,7 +48,7 @@ class AppClass {
 
         document.querySelector('.outputbox').addEventListener('click', e => {
             if (e.target.className === 'percent') {
-                document.querySelector('main').attributeStyleMap.set('grid-template-columns', `${CSS.percent(100 - e.target.dataset.percent)} ${CSS.percent(e.target.dataset.percent)}`);
+                document.querySelector('main').style.gridTemplateColumns = `${100 - e.target.dataset.percent}% ${e.target.dataset.percent}%`;
                 e.target.dataset.percent = 125 - e.target.dataset.percent;
             }
         });

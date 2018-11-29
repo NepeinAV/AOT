@@ -9,7 +9,7 @@ class DOM {
     }
 
     static loader(state) {
-        document.querySelector('.lds-ellipsis').attributeStyleMap.set('opacity', (state) ? '1' : '0');
+        document.querySelector('.lds-ellipsis').style.opacity = (state) ? '1' : '0';
     }
 
     static createElement(type, className, inner) {

@@ -81,7 +81,8 @@ class StepsHandleClass {
         const {
             isInputChanged,
             wordList,
-            sortedList
+            sortedList,
+            currentList
         } = this.state;
 
         let wrdList = [];

@@ -74,7 +74,7 @@ class SortHandleClass {
     }
 
     directionHandler(e) {
-        this.directionButton.attributeStyleMap.set('transform', `rotateZ(${CSS.deg((this.state.direction) ? 180: 0)})`);
+        this.directionButton.style.transform = `rotateZ(${(this.state.direction) ? 180: 0}deg)`;
         this.dispatch({
             direction: !this.state.direction
         });
