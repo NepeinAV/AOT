@@ -13,22 +13,16 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",
     "mini-css-extract-plugin": "^0.4.4",
-    "style-loader": "^0.23.1",
-    "url-loader": "^1.1.2",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-node-externals": "^1.7.2",
     "worker-loader": "^2.0.0"
-  },
-  "dependencies": {
-    "express": "^4.16.4",
-    "fs": "0.0.1-security"
   }
 }
