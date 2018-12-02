@@ -1,4 +1,5 @@
 import stopWords from './data/stopwords';
+import stopWordsEn from './data/stopwords_en';
 
 class Descriptor {
     static countDescriptors(words) {
@@ -10,8 +11,12 @@ class Descriptor {
 
     static cleanDescriptors(descriptors) {
         for (let descriptor in descriptors)
-            if (stopWords.indexOf(descriptor) !== -1)
+            if (this.chooseLanguage(descriptor).indexOf(descriptor) !== -1)
                 delete descriptors[descriptor];
+    }
+
+    static chooseLanguage(word) {
+        return (word[0] >= 'a' && word[0] <= 'z') ? stopWordsEn : stopWords;
     }
 
     static compressDescriptors(descriptors) {

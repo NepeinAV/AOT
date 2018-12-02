@@ -34,11 +34,13 @@ class SearchHandleClass {
             this.search.style.pointerEvents = 'unset';
             this.searchBox.classList.add('animation');
             this.searchButton.classList.add('close');
+            this.searchInput.focus();
         } else {
             this.search.style.opacity = 0;
             this.search.style.pointerEvents = 'none';
             this.searchBox.classList.remove('animation');
             this.searchButton.classList.remove('close');
+            this.searchInput.blur();
         }
         this.dispatch({
             isSearchBoxOpen: !this.state.isSearchBoxOpen
