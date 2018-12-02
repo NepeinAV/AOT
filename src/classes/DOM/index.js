@@ -13,28 +13,16 @@ class DOM {
     }
 
     static createElement(type, className, inner) {
-        let el;
-        el = document.createElement(type);
-        if (className)
-            el.className = className;
-        if (inner)
-            el.innerHTML = inner;
-
-        return el;
+        return `<${type} class="${className}">${inner}</${type}>`;
     }
 
     static createLine(i, left, right) {
         let line,
             inLine;
-        line = this.createElement('div', 'line');
-        inLine = this.createElement('div', 'number', i + 1);
-        line.appendChild(inLine);
-        inLine = this.createElement('div', 'word', left);
-        line.appendChild(inLine);
-        if (right) {
-            inLine = this.createElement('div', 'word', right);
-            line.appendChild(inLine);
-        }
+
+        inLine = this.createElement('div', 'number', i + 1) + this.createElement('div', 'word', left);
+        if (right) inLine += this.createElement('div', 'word', right);
+        line = this.createElement('div', 'line', inLine);
 
         return line;
     }
@@ -43,21 +31,23 @@ class DOM {
         let line;
         let inLine;
         if (!wordsleft.length) {
-            output.innerHTML = '';
-            output.appendChild(this.createLine(0, '', ''));
+            output.innerHTML = this.createLine(0, '', '');
         } else {
-            output.innerHTML = '';
-            wordsleft.map((val, i) => {
-                line = this.createLine(i, val, wordsright[i]);
-                output.appendChild(line)
-            });
+            let inner = '';
+            for (let i = 0; i < wordsleft.length; i++) {
+                line = this.createLine(i, wordsleft[i], wordsright[i]);
+                inner += line;
+            }
+            output.innerHTML = inner;
         }
     }
 
     static printWeights(wBox, poz, weights) {
+        let inner = '';
         wBox.innerHTML = '';
         for (let i = 0; i < weights.length; i++) {
-            wBox.appendChild(this.createElement('div', 'weight', poz[i] + ': ' + Math.round(weights[i] * 100) / 100));
+            inner += this.createElement('div', 'weight', poz[i] + ': ' + Math.round(weights[i] * 100) / 100);
+            wBox.innerHTML = inner;
         }
     }
 
@@ -66,20 +56,16 @@ class DOM {
         let keys = Object.keys(docs);
         let values = Object.values(docs);
         let count = 0;
+        let docsinner = '',
+            inner = '';
         for (let i = 0; i < keys.length; i++) {
             if (values[i] !== 0) {
                 count++;
-                let doc = this.createElement('div', 'document');
-                let num = this.createElement('div', 'num', count);
-                doc.appendChild(num);
-                num = this.createElement('div', 'title', keys[i] + '...');
-                doc.appendChild(num);
-                num = this.createElement('div', 'docinfo', `Релевантность: ${values[i]}%`);
-                doc.appendChild(num);
-                // doc.classList.add('animation');
-                docBox.appendChild(doc);
+                inner = this.createElement('div', 'num', count) + this.createElement('div', 'title', keys[i] + '...') + this.createElement('div', 'docinfo', `Релевантность: ${values[i]}%`);
+                docsinner += this.createElement('div', 'document', inner);
             }
         }
+        docBox.innerHTML = docsinner;
 
         return count;
     }
