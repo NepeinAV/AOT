@@ -3,22 +3,25 @@ import RussianStemmer from './RussianStemmer';
 
 class StemmerClass {
     constructor() {
-        this.en = new EnglishStemmer();
+        this.eng = new EnglishStemmer();
         this.rus = new RussianStemmer();
     }
 
-    stemWords(words) {
+    stemWords(words, lang = 'any') {
         let stemmedWords = [];
-        let lang = false;
+        let l = false;
+        if (lang === 'rus') l = this.rus;
+        else if (lang === 'eng') l = this.eng;
+
         for (let i = 0; i < words.length; i++) {
-            let lang = this.chooseLanguage(words[i]);
-            stemmedWords.push((lang !== false) ? lang.stemWord(words[i]) : words[i]);
+            if (lang === 'any') l = this.chooseLanguage(words[i]);
+            stemmedWords.push((lang !== false) ? l.stemWord(words[i]) : words[i]);
         }
         return stemmedWords;
     }
 
     chooseLanguage(word) {
-        if (word[0] >= 'a' && word[0] <= 'z') return this.en;
+        if (word[0] >= 'a' && word[0] <= 'z') return this.eng;
         if (word[0] >= 'а' && word[0] <= 'я') return this.rus;
         return false;
     }

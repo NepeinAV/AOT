@@ -10,9 +10,9 @@ class StepsHandleClass {
         this.input = document.querySelector('textarea');
         this.output = document.querySelector('.linesbox');
         this.worker = new Worker();
-        this.breakWordButton = document.querySelector('a[data-type=breaktext]');
-        this.stemmingButton = document.querySelector('a[data-type=stemming]');
-        this.podButton = document.querySelector('a[data-type=pod]');
+        this.breakWordButton = document.querySelector('div[data-type=breaktext]');
+        this.stemmingButton = document.querySelector('div[data-type=stemming]');
+        this.podButton = document.querySelector('div[data-type=pod]');
         this.buttons = [this.breakWordButton, this.stemmingButton, this.podButton];
         this.workerHandler = this.workerHandler.bind(this);
         this.breakWordButtonHandler = this.breakWordButtonHandler.bind(this);
@@ -46,7 +46,8 @@ class StepsHandleClass {
 
             this.dispatch({
                 stemmedList: message.result,
-                currentList: ['wordList', 'stemmedList']
+                currentList: ['wordList', 'stemmedList'],
+                lang: message.lang
             });
         } else if (message.action === 'descriptors') {
             let keys = Object.keys(message.result);
@@ -109,10 +110,11 @@ class StepsHandleClass {
         e.preventDefault();
         const {
             wordList,
-            stemmedList
+            stemmedList,
+            lang
         } = this.state;
 
-        if (stemmedList.length) {
+        if (stemmedList.length && e.target.dataset.lang === lang) {
             this.dispatch({
                 currentList: ['wordList', 'stemmedList']
             });
@@ -126,13 +128,16 @@ class StepsHandleClass {
 
         this.worker.postMessage({
             action: 'stem',
-            words: wordList.slice()
+            words: wordList.slice(),
+            lang: e.target.dataset.lang
         });
     }
 
     podButtonHandler(e) {
         const {
-            stemmedList
+            wordList,
+            stemmedList,
+            lang
         } = this.state;
         e.preventDefault();
 
@@ -140,7 +145,8 @@ class StepsHandleClass {
 
         this.worker.postMessage({
             action: 'descriptors',
-            words: stemmedList.slice()
+            words: (lang === 'any') ? stemmedList : wordList,
+            lang: lang
         });
     }
 }

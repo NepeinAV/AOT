@@ -28,10 +28,10 @@
 				</div>
 				<div></div>
 				<div class="tools">
-					<div class="ngram" title="N-граммы">NGr</div>
+					<div class="ngram" title="N-граммы"><input type="number" name="ninput" value="3" placeholder="N">Gr</div>
 					<div class="sort" data-type="asc"></div>
 					<div class="sort" data-type="desc"></div>
-					<div class="direction" data-type="right"></div>
+					<div class="direction" data-type="right" title="Чтение слева/справа"></div>
 					<div class="percent" data-percent="50"></div>
 				</div>
 			</div>
@@ -42,10 +42,18 @@
 				</div>
 			</div>
 		</section>
+
 		<nav>
-			<a href="#" class="menuel animate" data-type="breaktext">Выделить слова</a>
-			<a href="#" class="menuel" data-type="stemming">Стемминг</a>
-			<a href="#" class="menuel" data-type="pod">ПОД</a>
+			<div class="menuel animate" data-type="breaktext">Выделить слова</div>
+
+			<div class="menuel" data-type="stemming" data-lang="any">
+				<div class="stemming">
+					<a href="#" data-lang="rus">Rus</a>
+					<a href="#" data-lang="eng">Eng</a>
+				</div>
+				Стемминг
+			</div>
+			<div class="menuel" data-type="pod">ПОД</div>
 		</nav>
 	</main>
 	<div class="searchbutton"></div>

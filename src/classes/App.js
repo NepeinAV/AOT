@@ -41,6 +41,7 @@ class AppClass {
         SearchHandle.searchButton.addEventListener('click', SearchHandle.searchButtonHandler);
         SearchHandle.searchInput.addEventListener('change', SearchHandle.searchInputHandler);
         NGramHandle.nGramButton.addEventListener('click', NGramHandle.nGramButtonHandler);
+        NGramHandle.NInput.addEventListener('change', NGramHandle.NInputHandler);
         StepsHandle.worker.addEventListener('message', StepsHandle.workerHandler);
         StepsHandle.breakWordButton.addEventListener('click', StepsHandle.breakWordButtonHandler);
         StepsHandle.stemmingButton.addEventListener('click', StepsHandle.stemmingButtonHandler);
