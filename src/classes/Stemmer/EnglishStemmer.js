@@ -405,8 +405,6 @@ class EnglishStemmer {
         let r1 = this.getR1(word);
         if (r1[1] === '') {
             return this.isShortSyllable(word.substr(-3));
-            // if (!word[l - 3].inString(this.vowel) && word[l - 2].inString(this.vowel) && !word[l - 1].inString([...this.vowel, 'w', 'x', 'Y'])) return true;
-            // else if (word.length === 2 && word[l - 2].inString(this.vowel) && !word[l - 1].inString(this.vowel)) return true;
         }
         return false;
     }

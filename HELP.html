@@ -54,6 +54,11 @@
             line-height: 36px;
         }
 
+        .stemmer a {
+            display: block;
+            margin-top: 10px;
+        }
+
         .function {
             /* margin-left: 20px; */
             padding: 5px 0;
@@ -118,45 +123,11 @@
         </div>
         <li>Стемминг слов</li>
         <div class="function">
-            <div class="info">Исходный код располагается в файле <a href="./src/classes/Stemmer/index.js" target="blank">./src/classes/Stemmer/index.js</a></div>
-            <div class="methods">Методы:</div>
-            <ul class="inner">
-                <li>
-                    <div class="method">getRV(word: string): Array&lt;string&gt;</div>: выделяет RV часть слова.
-                </li>
-                <li>
-                    <div class="method">getR1(word: string): Array&lt;string&gt;</div>: выделяет R1 часть слова.
-                </li>
-                <li>
-                    <div class="method">getR2(r1: string): Array&lt;string&gt;</div>: выделяет R2 часть слова.
-                </li>
-                <li>
-                    <div class="method">stemWords(words: string): Array&lt;string&gt;</div>: выполняет стемминг всех
-                    слов в переданном ему массиве.
-                </li>
-                <li>
-                    <div class="method">stemWord(word: string): string</div>: выполняет стемминг слова.
-                </li>
-                <li>
-                    <div class="method">findEnding(endings: Array, word: string, has: boolean): string|boolean</div>:
-                    выполняет
-                    поиск окончания в слове
-                </li>
-                <li>
-                    <div class="method">firstStep(word: string): string</div>: выполняет первый шаг алгоритма стемминга
-                </li>
-                <li>
-                    <div class="method">secondStep(word: string): string</div>: выполняет второй шаг алгоритма
-                    стемминга
-                </li>
-                <li>
-                    <div class="method">thirdStep(word: string): string</div>: выполняет третий шаг алгоритма стемминга
-                </li>
-                <li>
-                    <div class="method">fourthStep(word: string): string</div>: выполняет четвёртый шаг алгоритма
-                    стемминга
-                </li>
-            </ul>
+            <div class="info stemmer">Исходный код располагается в файлах:
+                <a href="./src/classes/Stemmer/index.js" target="blank">./src/classes/Stemmer/index.js</a>
+                <a href="./src/classes/Stemmer/RussianStemmer.js" target="blank">./src/classes/Stemmer/RussianStemmer.js</a>
+                <a href="./src/classes/Stemmer/EnglishStemmer.js" target="blank">./src/classes/Stemmer/EnglishStemmer.js</a>
+            </div>
         </div>
         <li>Составление ПОД</li>
         <div class="function">
