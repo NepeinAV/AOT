@@ -55,12 +55,13 @@ class StepsHandleClass {
             let name = Base64.encodeBase64(this.input.value.split(' ', 7).join(' '));
 
             if (keys.length && !localStorage.getItem(name)) {
-                Descriptor.concatDescriptors(message.result);
                 localStorage.setItem(name, JSON.stringify({
                     descriptors: keys,
                     n: values,
                     type: 'document'
                 }));
+                Descriptor.concatDescriptors(message.result);
+                if (localStorage.getItem('docCount') === '1') DOM.catHandle();
             }
 
             DOM.print(this.output, keys, values);

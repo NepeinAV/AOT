@@ -69,6 +69,15 @@ class DOM {
 
         return count;
     }
+
+    static catHandle() {
+        this.cat(true);
+        setTimeout((e) => this.cat(false), 1500);
+    }
+
+    static cat(state) {
+        document.querySelector('.cat').style.animation = (state) ? 'scale 0.2s ease-in-out both' : 'scaleOut 0.2s ease-in-out both';
+    }
 }
 
 export default DOM;

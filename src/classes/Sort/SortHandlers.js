@@ -68,7 +68,9 @@ class SortHandleClass {
         const {
             currentList
         } = this.state;
-        if (typeof currentList !== 'object' || !currentList.length) return false;
+        if (typeof currentList !== 'object' || !currentList.length) {
+            return false;
+        }
         let array = this.getSortedArray(params);
         DOM.print(this.output, ...array);
     }

@@ -7,6 +7,7 @@ import Storage from './Storage';
 import {
     initialState
 } from './Storage/data/initialState';
+import DOM from './DOM';
 
 const Store = new Storage(initialState);
 const SearchHandle = new SearchHandleClass(Store);
