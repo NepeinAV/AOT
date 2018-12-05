@@ -3,8 +3,8 @@ import './classes/Sort';
 
 import AppClass from './classes/App';
 
-import './styles/style.css';
-import './styles/loader.css';
+import './styles/style.less';
+// import './styles/loader.css';
 
 const App = new AppClass();
 

@@ -1,26 +1,11 @@
 // out: style
+@import './loader.less';
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: Calibri, sans-serif;
     font-size: 16px;
-}
-
-.arrow(@size, @color) {
-    border: @size solid transparent;
-    border-top: @size solid @color;
-    position: absolute;
-    bottom: -2*@size;
-    left: e(%("calc(50% - %d)", @size));
-}
-
-.arrowTop(@size, @color) {
-    border: @size solid transparent;
-    border-bottom: @size solid @color;
-    position: absolute;
-    top: -2*@size;
-    left: e(%("calc(50% - %d)", @size));
 }
 
 main {
@@ -180,11 +165,6 @@ main {
                 padding-right: 8px;
                 margin-top: -1px;
                 cursor: pointer;
-                &:hover {
-                    .ngraminput {
-                        animation: fadeIn 0.1s ease-in-out both;
-                    }
-                }
                 input::-webkit-outer-spin-button,
                 input::-webkit-inner-spin-button {
                     -webkit-appearance: none;
@@ -199,33 +179,9 @@ main {
                     outline: none;
                     font-size: 19px;
                     font-weight: 600;
-                } // .ngraminput {
-                //     pointer-events: none;
-                //     position: absolute;
-                //     margin-left: -30px;
-                //     margin-top: 39px;
-                //     padding: 5px;
-                //     z-index: 99;
-                //     background: #fff;
-                //     border-radius: 3px;
-                //     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                //     opacity: 0;
-                //     &:before {
-                //         content: '';
-                //         .arrowTop(8px,
-                //         white);
-                //     }
-                //     input {
-                //         width: 80px;
-                //         border-radius: 3px;
-                //         border: 1px solid #efefef;
-                //         padding: 5px 10px;
-                //         outline: none;
-                //         &:focus {
-                //             box-shadow: inset 0 0 0 1px #efefef;
-                //         }
-                //     }
-                // }
+                    margin-right: 3px;
+                    color: #555;
+                }
             }
         }
     }
