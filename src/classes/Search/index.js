@@ -1,6 +1,6 @@
 import Base64 from '../other/Base64';
 import WordsClass from '../Words';
-import StemmerClass from '../stemmer';
+import StemmerClass from '../Stemmer';
 import {
     dblDescComp
 } from '../Sort/sortmethods';

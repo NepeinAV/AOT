@@ -1,4 +1,4 @@
-import SearchHandleClass from './search/SearchHandlers';
+import SearchHandleClass from './Search/SearchHandlers';
 import NGramHandleClass from './NGram/NGramHandlers';
 import SortHandleClass from './Sort/SortHandlers';
 import ReaderHandleClass from './FileReader/FileReaderHandlers';
