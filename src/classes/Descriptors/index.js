@@ -11,8 +11,7 @@ class Descriptor {
 
     static cleanDescriptors(descriptors) {
         for (let descriptor in descriptors)
-            if (this.chooseLanguage(descriptor).indexOf(descriptor) !== -1)
-                delete descriptors[descriptor];
+            if (this.chooseLanguage(descriptor).includes(descriptor)) delete descriptors[descriptor];
     }
 
     static chooseLanguage(word) {
@@ -46,19 +45,11 @@ class Descriptor {
         let keys = Object.keys(descriptors);
         let values = Object.values(descriptors);
         if (allD) {
-            for (let i = 0; i < keys.length; i++) {
-                if (allD.hasOwnProperty(keys[i])) {
-                    allD[keys[i]] += values[i];
-                } else {
-                    allD[keys[i]] = values[i];
-                }
-            }
-            localStorage.setItem('docCount', +localStorage.getItem('docCount') + 1);
-            localStorage.setItem('allDescriptors', JSON.stringify(allD));
-        } else {
-            localStorage.setItem('docCount', 1);
-            localStorage.setItem('allDescriptors', JSON.stringify(descriptors));
+            for (let i = 0; i < keys.length; i++)
+                allD[keys[i]] = (allD.hasOwnProperty(keys[i])) ? allD[keys[i]] + values[i] : values[i];
         }
+        localStorage.setItem('docCount', (allD) ? +localStorage.getItem('docCount') + 1 : 1);
+        localStorage.setItem('allDescriptors', JSON.stringify((allD) ? allD : descriptors));
     }
 
     static getDescriptors(words) {
