@@ -61,7 +61,7 @@ class DOM {
         for (let i = 0; i < keys.length; i++) {
             if (values[i] !== 0) {
                 count++;
-                inner = this.createElement('div', 'num', count) + this.createElement('div', 'title', keys[i] + '...') + this.createElement('div', 'docinfo', `Релевантность: ${values[i]}%`);
+                inner = this.createElement('div', 'num', count) + this.createElement('div', 'title', keys[i] + '...') + this.createElement('div', 'docinfo', `Релевантность: ${values[i].r}% | Логический критерий: ${values[i].logical}`);
                 docsinner += this.createElement('div', 'document', inner);
             }
         }

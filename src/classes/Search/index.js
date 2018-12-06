@@ -77,6 +77,7 @@ class SearchEngine {
                 doc = JSON.parse(localStorage.getItem(localStorage.key(i)));
                 if (doc.type === 'document') {
                     docsCount++;
+                    let logical = 1;
                     for (let i = 0; i < poz.length; i++) {
                         let dIndex = doc.descriptors.indexOf(poz[i]);
                         if (dIndex !== -1) {
@@ -86,10 +87,11 @@ class SearchEngine {
                                 r += 1 / 2 * weights[i];
                             else if (dIndex < 20)
                                 r += 1 / 3 * weights[i];
-                        }
+
+                        } else logical *= 0;
                     }
                     r = Math.round(r / poz.length * 100);
-                    sortedDocs.push([Base64.decodeBase64(localStorage.key(i)), r]);
+                    sortedDocs.push([Base64.decodeBase64(localStorage.key(i)), r, logical]);
                 }
             } finally {
                 continue;
@@ -99,7 +101,10 @@ class SearchEngine {
         sortedDocs.qsort(dblDescComp);
 
         for (let i = 0; i < sortedDocs.length; i++)
-            docsR[sortedDocs[i][0]] = sortedDocs[i][1];
+            docsR[sortedDocs[i][0]] = {
+                r: sortedDocs[i][1],
+                logical: sortedDocs[i][2]
+            };
 
         return docsR;
     }
