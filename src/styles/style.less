@@ -138,8 +138,8 @@ main {
             }
             .filesave {
                 background: url(../img/save-solid.svg) 0/auto 100% no-repeat;
-                width: 18px;
-                height: 18px;
+                width: 20px;
+                height: 20px;
                 margin-left: 11px;
                 cursor: pointer;
             }
@@ -187,7 +187,23 @@ main {
                     font-weight: 600;
                     margin-right: 3px;
                     color: #555;
+                    border-bottom: 1px solid #ccc;
+                    height: 22px;
+                    &:focus {
+                        border-bottom: 1px solid #aaa;
+                    }
                 }
+            }
+            .ngram,
+            .sort,
+            .filesave {
+                opacity: 0.5;
+                pointer-events: none;
+                transition: all .1s ease-in-out;
+            }
+            .toolsactive {
+                opacity: 1;
+                pointer-events: unset;
             }
         }
     }
@@ -285,7 +301,7 @@ main {
     .searchbox {
         padding: 0 15px;
         width: 100vw;
-        top: 0; // height: 80px;
+        top: 0;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -325,7 +341,7 @@ main {
     .documents {
         max-width: 1000px;
         width: 100%;
-        padding: 15px 15px;
+        padding: 15px 20px;
         margin: 0 auto;
         font-size: 18px;
         .document {
@@ -338,7 +354,7 @@ main {
             grid-template-rows: 1fr 1fr;
             .num {
                 grid-area: num;
-                justify-self: center;
+                justify-self: left;
             }
             .docinfo {
                 padding: 0 10px;

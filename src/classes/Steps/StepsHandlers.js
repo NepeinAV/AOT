@@ -41,19 +41,21 @@ class StepsHandleClass {
                 wordList: message.result,
                 isInputChanged: false,
                 stemmedList: [],
-                currentList: ['wordList']
+                currentList: (message.result.length) ? ['wordList'] : []
             });
             this.reader.fileSaverHandler();
+            DOM.toolsActive((message.result.length) ? true : false);
         } else if (message.action === 'stem') {
             DOM.print(this.output, this.state.wordList, message.result);
             DOM.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
 
             this.dispatch({
                 stemmedList: message.result,
-                currentList: ['wordList', 'stemmedList'],
+                currentList: (message.result.length) ? ['wordList', 'stemmedList'] : [],
                 lang: message.lang
             });
             this.reader.fileSaverHandler();
+            DOM.toolsActive((message.result.length) ? true : false);
         } else if (message.action === 'descriptors') {
             let keys = Object.keys(message.result);
             let values = Object.values(message.result);
@@ -75,9 +77,10 @@ class StepsHandleClass {
             this.dispatch({
                 descriptorsKeys: keys,
                 descriptorsValues: values,
-                currentList: ['descriptorsKeys', 'descriptorsValues']
+                currentList: (keys.length) ? ['descriptorsKeys', 'descriptorsValues'] : []
             });
             this.reader.fileSaverHandler();
+            DOM.toolsActive((keys.length) ? true : false);
         } else {
             console.error(e.data.error);
         }

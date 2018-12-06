@@ -51,19 +51,18 @@ class SearchHandleClass {
         let poz, weights, r = [];
         if (e.target.value.trim() !== '') {
             this.search.style.background = 'rgba(255,255,255, 0.95)';
-            this.documentsBox.style.paddingLeft = '15px';
             if (!this.docCount) {
-                this.documentsBox.textContent = 'Проиндексируйте хотя бы один документ';
-                this.documentsBox.style.paddingLeft = '20px';
+                this.documentsBox.textContent = 'В хранилище отсутствуют проиндексированные документы';
             } else {
                 poz = SearchEngine.handleRequest(this.searchInput.value);
                 weights = SearchEngine.calcWeights(poz);
-                r = SearchEngine.calculateR(poz, weights);
-                DOM.printWeights(this.weightBox, poz, weights);
-                this.weightBox.classList.add('animation');
-                if (!DOM.printDocuments(this.documentsBox, r)) {
-                    this.documentsBox.textContent = 'По вашему запросу ничего не найдено';
-                    this.documentsBox.style.paddingLeft = '20px';
+                if (weights === false) {
+                    this.documentsBox.textContent = 'В хранилище отсутствуют проиндексированные документы';
+                } else {
+                    r = SearchEngine.calculateR(poz, weights);
+                    DOM.printWeights(this.weightBox, poz, weights);
+                    this.weightBox.classList.add('animation');
+                    if (!DOM.printDocuments(this.documentsBox, r)) this.documentsBox.textContent = 'По вашему запросу ничего не найдено';
                 }
             }
             this.documentsBox.style.animation = '0.15s ease-in-out 0.08s fadeIn both';

@@ -15,7 +15,7 @@ class StemmerClass {
 
         for (let i = 0; i < words.length; i++) {
             if (lang === 'any') l = this.chooseLanguage(words[i]);
-            stemmedWords.push((lang !== false) ? l.stemWord(words[i]) : words[i]);
+            stemmedWords.push((l !== false) ? l.stemWord(words[i]) : words[i]);
         }
         return stemmedWords;
     }

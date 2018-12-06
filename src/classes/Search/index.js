@@ -34,10 +34,10 @@ class SearchEngine {
         А вес остальных слов ПОЗ по такой же формуле, но number будет равен числу вхождений этого слова в документ, которое было подсчитано на этапе создания ПОД.
     */
     static calcWeights(poz) {
-        let sum = 0;
-        let count = 0;
-        let number = 0;
-        let weights = [];
+        let sum = 0,
+            count = 0,
+            number = 0,
+            weights = [];
 
         let allD = JSON.parse(localStorage.getItem('allDescriptors'));
         if (!allD) return false;
@@ -90,7 +90,7 @@ class SearchEngine {
 
                         } else logical *= 0;
                     }
-                    r = Math.round(r / poz.length * 100);
+                    r = r / poz.length;
                     sortedDocs.push([Base64.decodeBase64(localStorage.key(i)), r, logical]);
                 }
             } finally {
