@@ -2,10 +2,13 @@ import DOM from '../DOM';
 import Base64 from '../other/Base64';
 import Descriptor from '../Descriptors';
 import Worker from 'worker-loader?inline=true&name=worker.bundle.js!../../worker.js';
+import FileReaderClass from '../FileReader/FileReaderHandlers';
 
 class StepsHandleClass {
     constructor(store) {
         this.store = store;
+
+        this.reader = new FileReaderClass(store);
 
         this.input = document.querySelector('textarea');
         this.output = document.querySelector('.linesbox');
@@ -40,6 +43,7 @@ class StepsHandleClass {
                 stemmedList: [],
                 currentList: ['wordList']
             });
+            this.reader.fileSaverHandler();
         } else if (message.action === 'stem') {
             DOM.print(this.output, this.state.wordList, message.result);
             DOM.renderSteps([this.stemmingButton, this.podButton], [true, true], [true]);
@@ -49,6 +53,7 @@ class StepsHandleClass {
                 currentList: ['wordList', 'stemmedList'],
                 lang: message.lang
             });
+            this.reader.fileSaverHandler();
         } else if (message.action === 'descriptors') {
             let keys = Object.keys(message.result);
             let values = Object.values(message.result);
@@ -72,6 +77,7 @@ class StepsHandleClass {
                 descriptorsValues: values,
                 currentList: ['descriptorsKeys', 'descriptorsValues']
             });
+            this.reader.fileSaverHandler();
         } else {
             console.error(e.data.error);
         }

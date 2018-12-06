@@ -1,7 +1,7 @@
 import SearchHandleClass from './Search/SearchHandlers';
 import NGramHandleClass from './NGram/NGramHandlers';
 import SortHandleClass from './Sort/SortHandlers';
-import ReaderHandleClass from './FileReader/FileReaderHandlers';
+// import ReaderHandleClass from './FileReader/FileReaderHandlers';
 import StepsHandleClass from './Steps/StepsHandlers';
 import Storage from './Storage';
 import {
@@ -13,7 +13,7 @@ const Store = new Storage(initialState);
 const SearchHandle = new SearchHandleClass(Store);
 const NGramHandle = new NGramHandleClass(Store);
 const SortHandle = new SortHandleClass(Store);
-const ReaderHandle = new ReaderHandleClass(Store);
+// const ReaderHandle = new ReaderHandleClass(Store);
 const StepsHandle = new StepsHandleClass(Store);
 
 class AppClass {
@@ -33,7 +33,6 @@ class AppClass {
     }
 
     createListeners() {
-        ReaderHandle.fileLoader.addEventListener('change', ReaderHandle.fileLoaderHandler);
         SortHandle.ascSortButton.addEventListener('click', e => SortHandle.sortHandler(e));
         SortHandle.descSortButton.addEventListener('click', e => SortHandle.sortHandler(e, {
             order: 'desc'
