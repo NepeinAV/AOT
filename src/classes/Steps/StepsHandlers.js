@@ -1,12 +1,13 @@
 import DOM from '../DOM';
+import StoreI from '../Storage/StoreI';
 import Base64 from '../other/Base64';
 import Descriptor from '../Descriptors';
 import Worker from 'worker-loader?inline=true&name=worker.bundle.js!../../worker.js';
 import FileReaderClass from '../FileReader/FileReaderHandlers';
 
-class StepsHandleClass {
+class StepsHandleClass extends StoreI {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.reader = new FileReaderClass(store);
 
@@ -21,14 +22,11 @@ class StepsHandleClass {
         this.breakWordButtonHandler = this.breakWordButtonHandler.bind(this);
         this.stemmingButtonHandler = this.stemmingButtonHandler.bind(this);
         this.podButtonHandler = this.podButtonHandler.bind(this);
-    }
 
-    get state() {
-        return this.store.state;
-    }
-
-    get dispatch() {
-        return this.store.dispatch;
+        this.worker.addEventListener('message', this.workerHandler);
+        this.breakWordButton.addEventListener('click', this.breakWordButtonHandler);
+        this.stemmingButton.addEventListener('click', this.stemmingButtonHandler);
+        this.podButton.addEventListener('click', this.podButtonHandler);
     }
 
     workerHandler(e) {

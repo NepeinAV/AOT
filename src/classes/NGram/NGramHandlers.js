@@ -1,23 +1,20 @@
 import DOM from '../DOM';
+import StoreI from '../Storage/StoreI';
 import NGram from './index';
 
-class NGramHandleClass {
+class NGramHandleClass extends StoreI {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.output = document.querySelector('.linesbox');
         this.nGramButton = document.querySelector('.ngram');
         this.NInput = document.querySelector('input[name=ninput]');
+
         this.nGramButtonHandler = this.nGramButtonHandler.bind(this);
         this.NInputHandler = this.NInputHandler.bind(this);
-    }
 
-    get state() {
-        return this.store.state;
-    }
-
-    get dispatch() {
-        return this.store.dispatch;
+        this.nGramButton.addEventListener('click', this.nGramButtonHandler);
+        this.NInput.addEventListener('change', this.NInputHandler);
     }
 
     NGrams() {

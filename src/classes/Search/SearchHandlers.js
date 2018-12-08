@@ -1,9 +1,10 @@
 import DOM from '../DOM';
+import StoreI from '../Storage/StoreI';
 import SearchEngine from './index.js';
 
-class SearchHandleClass {
+class SearchHandleClass extends StoreI {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.search = document.querySelector('.search');
         this.searchButton = document.querySelector('.searchbutton');
@@ -14,14 +15,9 @@ class SearchHandleClass {
 
         this.searchButtonHandler = this.searchButtonHandler.bind(this);
         this.searchInputHandler = this.searchInputHandler.bind(this);
-    }
 
-    get state() {
-        return this.store.state;
-    }
-
-    get dispatch() {
-        return this.store.dispatch;
+        this.searchButton.addEventListener('click', this.searchButtonHandler);
+        this.searchInput.addEventListener('change', this.searchInputHandler);
     }
 
     get docCount() {

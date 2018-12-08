@@ -1,12 +1,13 @@
 import DOM from '../DOM';
+import StoreI from '../Storage/StoreI';
 import NGram from '../NGram';
 import {
     descComp
 } from './sortmethods';
 
-class SortHandleClass {
+class SortHandleClass extends StoreI {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.output = document.querySelector('.linesbox');
         this.ascSortButton = document.querySelector('div[data-type=asc]');
@@ -16,14 +17,12 @@ class SortHandleClass {
         this.sortHandler = this.sortHandler.bind(this);
         this.getSortedArray = this.getSortedArray.bind(this);
         this.directionHandler = this.directionHandler.bind(this);
-    }
 
-    get state() {
-        return this.store.state;
-    }
-
-    get dispatch() {
-        return this.store.dispatch;
+        this.ascSortButton.addEventListener('click', this.sortHandler);
+        this.descSortButton.addEventListener('click', e => this.sortHandler(e, {
+            order: 'desc'
+        }));
+        this.directionButton.addEventListener('click', this.directionHandler);
     }
 
     getSortedArray(params) {

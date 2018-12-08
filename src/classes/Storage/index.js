@@ -1,6 +1,6 @@
-class Storage {
+class Store {
     constructor(state) {
-        this.state = state;
+        this.state = Object.freeze(state);
         this.dispatch = this.dispatch.bind(this);
     }
 
@@ -14,4 +14,4 @@ class Storage {
     }
 }
 
-export default Storage;
+export default Store;

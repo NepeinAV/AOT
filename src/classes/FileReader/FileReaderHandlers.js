@@ -1,6 +1,8 @@
-class FileReaderClass {
+import StoreI from '../Storage/StoreI';
+
+class FileReaderClass extends StoreI {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.input = document.querySelector('textarea');
         this.fileLoader = document.querySelector('#fileloader');
@@ -16,14 +18,6 @@ class FileReaderClass {
         this.fileLoaderHandler = this.fileLoaderHandler.bind(this);
         this.fileSaverHandler = this.fileSaverHandler.bind(this);
         this.fileLoader.addEventListener('change', this.fileLoaderHandler);
-    }
-
-    get state() {
-        return this.store.state;
-    }
-
-    get dispatch() {
-        return this.store.dispatch;
     }
 
     fileLoaderHandler(e) {
